@@ -1,12 +1,16 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Styling;
+using Avalonia.Threading;
+using Avalonia.VisualTree;
 
 namespace SourceGit.Views
 {
@@ -156,9 +160,75 @@ namespace SourceGit.Views
                 }
             }
 
-            var fill = this.FindResource("Brush.ToolBar") as IBrush;
+            var fill = GetActiveTabFill();
             var stroke = new Pen(this.FindResource("Brush.Border0") as IBrush);
             context.DrawGeometry(fill, stroke, geo);
+
+            // The 2px highlight bar along the active tab's bottom edge is drawn here rather than set
+            // as a BorderThickness on the item container: changing a border changes the measured
+            // size, and doing that from a layout callback re-triggers layout and can hang the UI.
+            var barLeft = Math.Max(activeStartX - startX + LauncherTabsScroller.Bounds.X, LauncherTabsScroller.Bounds.X);
+            var barRight = Math.Min(activeEndX - startX + LauncherTabsScroller.Bounds.X, LauncherTabsScroller.Bounds.Right);
+            if (barRight > barLeft)
+            {
+                var barRect = new Rect(barLeft + 1, height - 2, Math.Max(0, barRight - barLeft - 2), 2);
+                context.DrawRectangle(GetHighlightBrush(), null, barRect);
+            }
+        }
+
+        /// <summary>
+        ///     Fixed red instead of the system accent colour: the accent follows the OS theme and on
+        ///     Windows resolves to a blue that reads as "not highlighted at all" against the title
+        ///     bar. Cached so repeated layout passes hand out the same instance.
+        /// </summary>
+        private IBrush GetHighlightBrush()
+        {
+            var color = ActualThemeVariant == ThemeVariant.Light ? Color.FromRgb(0xC5, 0x2F, 0x2F) : Colors.Red;
+            if (_highlightBrush == null || _highlightBrushColor != color)
+            {
+                _highlightBrushColor = color;
+                _highlightBrush = new SolidColorBrush(color);
+                _highlightTint = new SolidColorBrush(color, 0.16);
+            }
+
+            return _highlightBrush;
+        }
+
+        private ISolidColorBrush GetHighlightTint()
+        {
+            GetHighlightBrush();
+            return _highlightTint;
+        }
+
+        /// <summary>
+        ///     The active tab used to be filled with Brush.ToolBar. On themes where the title bar and
+        ///     the tool bar resolve to the same colour the shape was drawn on top of itself and
+        ///     disappeared, so fall back to the window brush whenever the two are close.
+        /// </summary>
+        private IBrush GetActiveTabFill()
+        {
+            var toolbar = this.FindResource("Brush.ToolBar") as ISolidColorBrush;
+            if (toolbar == null)
+                return Brushes.Transparent;
+
+            var titleBar = this.FindResource("Brush.TitleBar") as ISolidColorBrush;
+            if (titleBar != null && AreClose(titleBar.Color, toolbar.Color))
+            {
+                var window = this.FindResource("Brush.Window") as ISolidColorBrush;
+                if (window != null && !AreClose(window.Color, titleBar.Color))
+                    return window;
+            }
+
+            return toolbar;
+        }
+
+        private static bool AreClose(Color a, Color b)
+        {
+            const byte tolerance = 8;
+            return Math.Abs(a.R - b.R) <= tolerance &&
+                   Math.Abs(a.G - b.G) <= tolerance &&
+                   Math.Abs(a.B - b.B) <= tolerance &&
+                   Math.Abs(a.A - b.A) <= tolerance;
         }
 
         protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -204,12 +274,142 @@ namespace SourceGit.Views
         private void OnTabsLayoutUpdated(object _1, EventArgs _2)
         {
             IsScrollButtonVisible = LauncherTabsScroller.Extent.Width > LauncherTabsScroller.Viewport.Width;
+            ScheduleActiveSync();
             InvalidateVisual();
         }
 
         private void OnTabsSelectionChanged(object _1, SelectionChangedEventArgs _2)
         {
+            ScheduleActiveSync();
             InvalidateVisual();
+        }
+
+        /// <summary>
+        ///     Never decorates the tab bar synchronously from a layout callback: touching the item
+        ///     containers there re-enters layout, and the UI thread can end up looping until the
+        ///     window stops responding. The work is posted at background priority and coalesced,
+        ///     so at most one decoration pass is pending at any time.
+        /// </summary>
+        private void ScheduleActiveSync()
+        {
+            if (_activeSyncPending)
+                return;
+
+            _activeSyncPending = true;
+            Dispatcher.UIThread.Post(() =>
+            {
+                _activeSyncPending = false;
+                SyncActiveClass();
+            }, DispatcherPriority.Background);
+        }
+
+        /// <summary>
+        ///     Applies the active-page decoration directly, as local values on the item container and
+        ///     on the title TextBlock.
+        ///
+        ///     Every style-based route was either invisible on Windows or impossible to verify from
+        ///     here: a ListBoxItem:selected style has to reach into the item template, and a
+        ///     descendant selector has to cross the DataTemplate boundary, while the class-keyed
+        ///     styles still depend on where the styles collection is applied. Local values outrank
+        ///     theme, application and control setters alike, so what is computed here is exactly
+        ///     what gets rendered on every platform.
+        /// </summary>
+        private void SyncActiveClass()
+        {
+            if (LauncherTabsList == null)
+                return;
+
+            var selected = LauncherTabsList.SelectedIndex;
+            var count = LauncherTabsList.ItemCount;
+            var highlightBrush = GetHighlightBrush();
+            var tint = GetHighlightTint();
+            var realized = 0;
+            var titles = 0;
+
+            for (var i = 0; i < count; i++)
+            {
+                var container = LauncherTabsList.ContainerFromIndex(i) as ContentControl;
+                if (container == null)
+                    continue;
+
+                realized++;
+
+                var active = i == selected;
+                container.Classes.Set("active", active);
+                if (active)
+                {
+                    // Render-only properties: no measured size changes, so this cannot start a
+                    // layout loop. The bottom bar is painted by Render().
+                    if (!ReferenceEquals(container.Background, tint))
+                        container.Background = tint;
+
+                    if (!ReferenceEquals(container.BorderBrush, highlightBrush))
+                        container.BorderBrush = highlightBrush;
+
+                    if (container.Opacity != 1)
+                        container.Opacity = 1;
+                }
+                else
+                {
+                    if (container.Background != null)
+                        container.ClearValue(TemplatedControl.BackgroundProperty);
+
+                    if (container.BorderBrush != null)
+                        container.ClearValue(TemplatedControl.BorderBrushProperty);
+
+                    if (container.BorderThickness != default(Thickness))
+                        container.ClearValue(TemplatedControl.BorderThicknessProperty);
+
+                    container.ClearValue(Visual.OpacityProperty);
+                }
+
+                foreach (var title in container.GetVisualDescendants().OfType<TextBlock>())
+                {
+                    if (!title.Classes.Contains("tab_title"))
+                        continue;
+
+                    titles++;
+                    title.Classes.Set("active", active);
+                    if (active)
+                    {
+                        if (title.FontWeight != FontWeight.Bold)
+                            title.FontWeight = FontWeight.Bold;
+
+                        if (!ReferenceEquals(title.Foreground, highlightBrush))
+                            title.Foreground = highlightBrush;
+                    }
+                    else
+                    {
+                        title.ClearValue(TextBlock.FontWeightProperty);
+                        title.ClearValue(TextBlock.ForegroundProperty);
+                    }
+                }
+            }
+
+            TraceActiveSync(selected, count, realized, titles);
+        }
+
+        /// <summary>
+        ///     Writes one line per distinct outcome, so a report of "nothing changed" can be turned
+        ///     into a fact: either no container was realized (containers == 0) or the decoration was
+        ///     applied and the problem lies elsewhere.
+        /// </summary>
+        private void TraceActiveSync(int selected, int count, int realized, int titles)
+        {
+            var state = $"{selected}/{count}/{realized}/{titles}";
+            if (state == _lastActiveTrace)
+                return;
+
+            _lastActiveTrace = state;
+            try
+            {
+                File.AppendAllText(_activeTraceFile,
+                    $"{DateTime.Now:HH:mm:ss.fff} tab=active selected={selected} items={count} containers={realized} titles={titles}{Environment.NewLine}");
+            }
+            catch
+            {
+                // Tracing must never break the UI.
+            }
         }
 
         private void OnPointerPressedTab(object sender, PointerPressedEventArgs e)
@@ -428,5 +628,11 @@ namespace SourceGit.Views
         private PointerPressedEventArgs _pressedTabEvent = null;
         private bool _startDragTab = false;
         private readonly DataFormat<string> _dndMainTabFormat = DataFormat.CreateStringApplicationFormat("sourcegit-dnd-main-tab");
+        private readonly string _activeTraceFile = Path.Combine(Native.OS.BasicDirectories.ConfigDir, "tabbar-trace.log");
+        private string _lastActiveTrace = null;
+        private bool _activeSyncPending;
+        private IBrush _highlightBrush;
+        private ISolidColorBrush _highlightTint;
+        private Color _highlightBrushColor;
     }
 }

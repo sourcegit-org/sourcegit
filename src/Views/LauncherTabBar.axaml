@@ -38,37 +38,40 @@
           <ListBox.Styles>
             <Style Selector="ListBoxItem">
               <Setter Property="Padding" Value="0"/>
-            </Style>
-            <Style Selector="ListBoxItem /template/ ContentPresenter#PART_ContentPresenter">
               <Setter Property="Background" Value="Transparent"/>
+              <Setter Property="BorderThickness" Value="0"/>
               <Setter Property="Opacity" Value=".6"/>
             </Style>
-            <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter#PART_ContentPresenter">
-              <Setter Property="Background" Value="Transparent"/>
+            <Style Selector="ListBoxItem:pointerover">
               <Setter Property="Opacity" Value=".85"/>
             </Style>
             <!--
-              The active page must be recognizable at a glance: a tinted background block
-              plus a 2px accent bar along its bottom edge. Opacity alone (the previous
-              treatment) left the active tab almost indistinguishable from the others.
+              The active page must be recognizable at a glance: a tinted background block plus a
+              2px accent bar along its bottom edge, and its title bold. These styles are keyed off
+              a class the code-behind puts on the item container itself, not off ListBoxItem:selected
+              with a /template/ ContentPresenter target: whether that presenter draws its own
+              background/border appears to depend on the platform's template composition, and on
+              Windows the tint and the bar were simply not visible.
             -->
-            <Style Selector="ListBoxItem:selected /template/ ContentPresenter#PART_ContentPresenter">
+            <Style Selector="ListBoxItem.active">
+              <Setter Property="Opacity" Value="1"/>
               <Setter Property="Background">
-                <SolidColorBrush Color="{DynamicResource SystemAccentColor}" Opacity="0.16"/>
+                <SolidColorBrush Color="Red" Opacity="0.16"/>
               </Setter>
-              <Setter Property="BorderBrush" Value="{DynamicResource Brush.Accent}"/>
+              <Setter Property="BorderBrush" Value="Red"/>
               <Setter Property="BorderThickness" Value="0,0,0,2"/>
-              <Setter Property="Opacity" Value="1"/>
             </Style>
-            <Style Selector="ListBoxItem:selected:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Style Selector="ListBoxItem.active:pointerover">
               <Setter Property="Background">
-                <SolidColorBrush Color="{DynamicResource SystemAccentColor}" Opacity="0.22"/>
+                <SolidColorBrush Color="Red" Opacity="0.22"/>
               </Setter>
               <Setter Property="Opacity" Value="1"/>
             </Style>
-            <!-- The active page title goes bold and red, so it stands out even when the
-                 accent bar itself is subtle on a busy background. -->
-            <Style Selector="ListBoxItem:selected TextBlock.tab_title">
+            <!--
+              Plain compound selector on the title itself: the same class is set on the TextBlock
+              in code, so no descendant chain across the DataTemplate boundary is involved.
+            -->
+            <Style Selector="TextBlock.tab_title.active">
               <Setter Property="FontWeight" Value="Bold"/>
               <Setter Property="Foreground" Value="Red"/>
             </Style>
