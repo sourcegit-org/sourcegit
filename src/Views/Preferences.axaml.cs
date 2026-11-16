@@ -222,6 +222,9 @@ namespace SourceGit.Views
             }
 
             var preferences = ViewModels.Preferences.Instance;
+            WindowTrace.Write($"Preferences save: layout=({preferences.Layout.LauncherWidth}x{preferences.Layout.LauncherHeight}, " +
+                $"position=({preferences.Layout.LauncherPositionX},{preferences.Layout.LauncherPositionY}), " +
+                $"state={preferences.Layout.LauncherWindowState})");
             preferences.Save();
         }
 
