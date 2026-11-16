@@ -64,7 +64,7 @@ namespace SourceGit
             builder.WithInterFont();
             builder.With(new FontManagerOptions()
             {
-                DefaultFamilyName = "fonts:Inter#Inter"
+                DefaultFamilyName = Models.PlatformFonts.PrimaryFamily
             });
             builder.ConfigureFonts(manager =>
             {
@@ -189,6 +189,12 @@ namespace SourceGit
             defaultFont = StringExtensions.FormatFontNames(defaultFont);
             monospaceFont = StringExtensions.FormatFontNames(monospaceFont);
 
+            // An empty preference means "use the platform default", not "use Inter for everything":
+            // Inter has no CJK glyphs, so leaving it in place lets the platform fallback pick an
+            // arbitrary Chinese font and mixed lines end up with a mismatched baseline.
+            if (string.IsNullOrEmpty(defaultFont))
+                defaultFont = Models.PlatformFonts.DefaultFamily;
+
             var resDic = new ResourceDictionary();
             if (!string.IsNullOrEmpty(defaultFont))
                 resDic.Add("Fonts.Default", new FontFamily(defaultFont));
@@ -197,7 +203,7 @@ namespace SourceGit
             {
                 if (!string.IsNullOrEmpty(defaultFont))
                 {
-                    monospaceFont = $"fonts:SourceGit#JetBrains Mono NL,{defaultFont}";
+                    monospaceFont = $"fonts:SourceGit#JetBrains Mono NL,{Models.PlatformFonts.MonospaceFallback},{defaultFont}";
                     resDic.Add("Fonts.Monospace", FontFamily.Parse(monospaceFont));
                 }
             }
