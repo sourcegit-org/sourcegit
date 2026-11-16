@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
+using Avalonia.Input.Platform;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
 using Avalonia.VisualTree;
@@ -153,6 +155,11 @@ namespace SourceGit.Views
 
         private async void OnAddProject(object sender, RoutedEventArgs e)
         {
+            await AddProjectAsync();
+        }
+
+        private async System.Threading.Tasks.Task AddProjectAsync()
+        {
             var dirs = await PickDirectoriesAsync("选择工程目录");
             if (dirs.Count == 0)
                 return;
@@ -163,6 +170,50 @@ namespace SourceGit.Views
 
             Tree.SelectedItem = node;
             await ViewModels.Projects.Instance.RebuildAsync(node);
+        }
+
+        /// <summary>
+        ///     Blank-area counterpart of the "+ 工程" button: takes the path the user already
+        ///     copied elsewhere (explorer, terminal, an issue) instead of opening a picker.
+        /// </summary>
+        private async System.Threading.Tasks.Task AddProjectFromClipboardAsync()
+        {
+            var clipboard = TopLevel.GetTopLevel(this)?.Clipboard;
+            if (clipboard == null)
+                return;
+
+            var text = await clipboard.TryGetTextAsync();
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                ViewModels.Projects.Instance.StatusText = "剪贴板里没有可用的目录路径";
+                return;
+            }
+
+            var candidates = text
+                .Split(new[] { '\r', '\n', ';', '"' }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(line => line.Trim())
+                .Where(line => line.Length > 0 && Directory.Exists(line))
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToList();
+
+            if (candidates.Count == 0)
+            {
+                ViewModels.Projects.Instance.StatusText = "剪贴板里没有可用的目录路径";
+                return;
+            }
+
+            var node = ViewModels.Projects.Instance.CreateProject(candidates);
+            if (node == null)
+                return;
+
+            Tree.SelectedItem = node;
+            await ViewModels.Projects.Instance.RebuildAsync(node);
+        }
+
+        private async System.Threading.Tasks.Task RescanAllAsync()
+        {
+            foreach (var root in ViewModels.Projects.Instance.Roots.ToList())
+                await ViewModels.Projects.Instance.RebuildAsync(root);
         }
 
         private async void OnAddDirectory(object sender, RoutedEventArgs e)
@@ -193,7 +244,7 @@ namespace SourceGit.Views
         ///     Removes exactly what is selected: the project itself, the configured directory
         ///     under it, or one discovered node below that. Nothing on disk is touched.
         /// </summary>
-        private void OnRemoveSelection(object sender, RoutedEventArgs e)
+        private async void OnRemoveSelection(object sender, RoutedEventArgs e)
         {
             var node = Tree.SelectedItem as ViewModels.ProjectTreeNode;
             if (node == null)
@@ -202,14 +253,41 @@ namespace SourceGit.Views
                 return;
             }
 
+            await RemoveWithConfirmAsync(node);
+        }
+
+        /// <summary>
+        ///     One removal path shared by the toolbar button and the context menu, so the same
+        ///     node can no longer behave differently depending on which entry point is used.
+        ///     Bulk removals (a whole project, or a first-level directory that takes its
+        ///     repositories with it) ask for confirmation; a single repository does not.
+        /// </summary>
+        private async System.Threading.Tasks.Task RemoveWithConfirmAsync(ViewModels.ProjectTreeNode node)
+        {
+            if (node == null)
+                return;
+
             if (node.IsProject)
             {
+                var ok = await App.AskConfirmAsync($"移除工程「{node.Name}」？（仅从列表中移除，不删除磁盘文件）");
+                if (!ok)
+                    return;
+
                 ViewModels.Projects.Instance.RemoveProject(node);
                 return;
             }
 
             if (node.Parent?.IsProject == true)
             {
+                var repositories = CountRepositories(node);
+                var message = repositories > 0
+                    ? $"移除目录「{node.Name}」及其下的 {repositories} 个仓库？（不删除磁盘文件）"
+                    : $"移除目录「{node.Name}」？（不删除磁盘文件）";
+
+                var ok = await App.AskConfirmAsync(message);
+                if (!ok)
+                    return;
+
                 ViewModels.Projects.Instance.RemoveDirectory(node.Parent, node);
                 return;
             }
@@ -230,14 +308,31 @@ namespace SourceGit.Views
         private void UpdateRemoveButton()
         {
             var node = Tree.SelectedItem as ViewModels.ProjectTreeNode;
-            if (node == null)
-                RemoveButton.Content = "移除";
-            else if (node.IsProject)
-                RemoveButton.Content = "移除工程";
-            else if (node.Parent?.IsProject == true)
-                RemoveButton.Content = "移除目录";
-            else
-                RemoveButton.Content = node.IsRepository ? "移除仓库" : "移除目录";
+            RemoveButton.Content = node == null ? "移除" : GetRemoveLabel(node);
+        }
+
+        /// <summary>
+        ///     The label is derived from the node kind only, so the context menu and the toolbar
+        ///     can never disagree about what a click is going to remove.
+        /// </summary>
+        private static string GetRemoveLabel(ViewModels.ProjectTreeNode node)
+        {
+            if (node.IsProject)
+                return "移除工程";
+
+            if (node.Parent?.IsProject == true)
+                return "移除目录";
+
+            return node.IsRepository ? "移除仓库" : "移除目录";
+        }
+
+        private static int CountRepositories(ViewModels.ProjectTreeNode node)
+        {
+            var count = node.IsRepository ? 1 : 0;
+            foreach (var child in node.Children)
+                count += CountRepositories(child);
+
+            return count;
         }
 
         private void OnItemDoubleTapped(object sender, TappedEventArgs e)
@@ -246,13 +341,19 @@ namespace SourceGit.Views
                 node.Open();
         }
 
+        /// <summary>
+        ///     A context menu is attached to the whole TreeView, so a right-click that hits no
+        ///     row lands here. Leaving the menu empty made Avalonia open an empty popup, which
+        ///     reads as "right-click does nothing"; the blank area now gets its own menu of
+        ///     global actions instead.
+        /// </summary>
         private void OnContextRequested(object sender, ContextRequestedEventArgs e)
         {
             var item = (e.Source as Visual)?.FindAncestorOfType<TreeViewItem>();
             var node = item?.DataContext as ViewModels.ProjectTreeNode;
             if (node == null)
             {
-                NodeMenu.Items.Clear();
+                BuildBlankContextMenu();
                 return;
             }
 
@@ -282,29 +383,52 @@ namespace SourceGit.Views
                 AddSeparator();
             }
 
-            if (node.Parent != null && node.Parent.IsProject)
-                AddItem("从工程中移除此目录", () => ViewModels.Projects.Instance.RemoveDirectory(projectNode, node));
+            // Same three cases as the toolbar: project, first-level directory, everything below.
+            // Previously only first-level directories had a removal item at all, so a repository
+            // or a nested directory could be removed with the button but not from the menu.
+            AddTaskItem(GetRemoveLabel(node), () => RemoveWithConfirmAsync(node));
 
-            if (projectNode != null)
-                AddTaskItem("重新扫描工程", () => ViewModels.Projects.Instance.RebuildAsync(projectNode));
-
-            if (node.IsProject)
+            if (projectNode != null && !node.IsProject)
             {
                 AddSeparator();
-                AddItem("移除工程", () => ViewModels.Projects.Instance.RemoveProject(node));
+                AddTaskItem("重新扫描此工程", () => ViewModels.Projects.Instance.RebuildAsync(projectNode));
             }
         }
 
-        private void AddItem(string header, Action action)
+        /// <summary>
+        ///     Menu for the empty part of the tree. Every action is global and every header says
+        ///     so ("全部"), because the selected node may be anything and must not be re-targeted
+        ///     by a click that did not land on it. Nothing here removes anything.
+        /// </summary>
+        private void BuildBlankContextMenu()
         {
-            var item = new MenuItem { Header = header };
+            NodeMenu.Items.Clear();
+
+            var projects = ViewModels.Projects.Instance;
+            var hasProjects = projects.Roots.Count > 0;
+
+            AddTaskItem("添加工程…", AddProjectAsync);
+            AddTaskItem("从剪贴板路径添加工程", AddProjectFromClipboardAsync);
+            AddSeparator();
+            AddTaskItem("刷新全部状态", () => projects.RefreshStatusAsync(), hasProjects);
+            AddTaskItem("重新扫描全部工程", RescanAllAsync, hasProjects);
+            AddSeparator();
+            AddItem("全部展开", () => projects.SetAllExpanded(true), hasProjects);
+            AddItem("全部折叠", () => projects.SetAllExpanded(false), hasProjects);
+            AddSeparator();
+            AddItem("打开配置目录", () => Native.OS.OpenInFileManager(Native.OS.BasicDirectories.ConfigDir));
+        }
+
+        private void AddItem(string header, Action action, bool enabled = true)
+        {
+            var item = new MenuItem { Header = header, IsEnabled = enabled };
             item.Click += (_, _) => action();
             NodeMenu.Items.Add(item);
         }
 
-        private void AddTaskItem(string header, Func<System.Threading.Tasks.Task> action)
+        private void AddTaskItem(string header, Func<System.Threading.Tasks.Task> action, bool enabled = true)
         {
-            var item = new MenuItem { Header = header };
+            var item = new MenuItem { Header = header, IsEnabled = enabled };
             item.Click += async (_, _) => await action();
             NodeMenu.Items.Add(item);
         }

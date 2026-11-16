@@ -672,6 +672,57 @@ namespace SourceGit.ViewModels
                 SortChildren(child);
         }
 
+        /// <summary>
+        ///     Expands or collapses the whole tree at once. Each node change is kept out of the
+        ///     persisted collapsed set while it happens, then the set is rewritten once — otherwise
+        ///     "collapse all" would write projects.json once per node.
+        /// </summary>
+        public void SetAllExpanded(bool expanded)
+        {
+            if (Roots.Count == 0)
+                return;
+
+            _suppressCollapseSave = true;
+            try
+            {
+                foreach (var root in Roots)
+                    ApplyExpandedRecursive(root, expanded);
+            }
+            finally
+            {
+                _suppressCollapseSave = false;
+            }
+
+            _collapsed.Clear();
+            if (!expanded)
+            {
+                foreach (var root in Roots)
+                    CollectCollapsedRecursive(root, _collapsed);
+            }
+
+            Save();
+        }
+
+        private static void ApplyExpandedRecursive(ProjectTreeNode node, bool expanded)
+        {
+            foreach (var child in node.Children)
+            {
+                child.IsExpanded = expanded;
+                ApplyExpandedRecursive(child, expanded);
+            }
+        }
+
+        private static void CollectCollapsedRecursive(ProjectTreeNode node, HashSet<string> keys)
+        {
+            foreach (var child in node.Children)
+            {
+                if (!string.IsNullOrEmpty(child.FullPath))
+                    keys.Add(Models.RepositoryScanner.Key(child.FullPath));
+
+                CollectCollapsedRecursive(child, keys);
+            }
+        }
+
         private void OnNodePropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName != nameof(ProjectTreeNode.IsExpanded) || _suppressCollapseSave)
