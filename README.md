@@ -197,11 +197,11 @@ For `API Route`:
 * `Model` can be `gpt-6.1-sol` if it is available to your key; otherwise select an available chat model from the fetched catalog
 * See the [API documentation](https://github.com/DennyHo0917/api-route/blob/main/API.md) for authentication and model discovery
 
-For `UberLLM`:
+For `MartLLM`:
 
-* `Server` should be `https://api.uberllm.dev/v1`
-* `API Key` should be an UberLLM API key, created at https://uberllm.dev/signup
-* A good starting `Model` is `deepseek/deepseek-v4.1-flash`; other chat models (Claude, GPT, Gemini, Qwen, GLM and more) are in the fetched catalog, with prices at https://uberllm.dev/models
+* `Server` should be `https://api.martllm.com/v1`
+* `API Key` should be a MartLLM API key, created at https://martllm.com/signup
+* A good starting `Model` is `deepseek/deepseek-v4.1-flash`; other chat models (Claude, GPT, Gemini, Qwen, GLM and more) are in the fetched catalog, with prices at https://martllm.com/models
 
 For other AI service:
 
