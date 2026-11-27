@@ -218,6 +218,7 @@
             <TextBox Grid.Row="1" Grid.Column="1"
                      Height="28"
                      CornerRadius="3"
+                     Watermark="{x:Static m:PlatformFonts.DefaultFamily}"
                      Text="{Binding DefaultFontFamily, Mode=TwoWay}"/>
 
             <TextBlock Grid.Row="2" Grid.Column="0"
@@ -227,6 +228,7 @@
             <TextBox Grid.Row="2" Grid.Column="1"
                      Height="28"
                      CornerRadius="3"
+                     Watermark="{x:Static m:PlatformFonts.MonospaceFallback}"
                      Text="{Binding MonospaceFontFamily, Mode=TwoWay}"/>
 
             <TextBlock Grid.Row="3" Grid.Column="0"

@@ -25,6 +25,10 @@ namespace SourceGit
         {
             Native.OS.SetupBasicDirectories();
 
+            var scanLogFromEnv = Environment.GetEnvironmentVariable("SOURCEGIT_SCAN_LOG");
+            if (!string.IsNullOrEmpty(scanLogFromEnv))
+                Models.ScanLog.Open(scanLogFromEnv);
+
             AppDomain.CurrentDomain.UnhandledException += (_, e) =>
             {
                 Native.OS.LogException(e.ExceptionObject as Exception);
@@ -37,7 +41,9 @@ namespace SourceGit
 
             try
             {
-                if (TryLaunchAsRebaseTodoEditor(args, out int exitTodo))
+                if (TryRunScanCommand(args, out int exitScan))
+                    Environment.Exit(exitScan);
+                else if (TryLaunchAsRebaseTodoEditor(args, out int exitTodo))
                     Environment.Exit(exitTodo);
                 else if (TryLaunchAsRebaseMessageEditor(args, out int exitMessage))
                     Environment.Exit(exitMessage);
@@ -58,7 +64,7 @@ namespace SourceGit
             builder.WithInterFont();
             builder.With(new FontManagerOptions()
             {
-                DefaultFamilyName = "fonts:Inter#Inter"
+                DefaultFamilyName = Models.PlatformFonts.PrimaryFamily
             });
             builder.ConfigureFonts(manager =>
             {
@@ -183,6 +189,12 @@ namespace SourceGit
             defaultFont = StringExtensions.FormatFontNames(defaultFont);
             monospaceFont = StringExtensions.FormatFontNames(monospaceFont);
 
+            // An empty preference means "use the platform default", not "use Inter for everything":
+            // Inter has no CJK glyphs, so leaving it in place lets the platform fallback pick an
+            // arbitrary Chinese font and mixed lines end up with a mismatched baseline.
+            if (string.IsNullOrEmpty(defaultFont))
+                defaultFont = Models.PlatformFonts.DefaultFamily;
+
             var resDic = new ResourceDictionary();
             if (!string.IsNullOrEmpty(defaultFont))
                 resDic.Add("Fonts.Default", new FontFamily(defaultFont));
@@ -191,7 +203,7 @@ namespace SourceGit
             {
                 if (!string.IsNullOrEmpty(defaultFont))
                 {
-                    monospaceFont = $"fonts:SourceGit#JetBrains Mono NL,{defaultFont}";
+                    monospaceFont = $"fonts:SourceGit#JetBrains Mono NL,{Models.PlatformFonts.MonospaceFallback},{defaultFont}";
                     resDic.Add("Fonts.Monospace", FontFamily.Parse(monospaceFont));
                 }
             }
@@ -275,6 +287,52 @@ namespace SourceGit
 
                 TryLaunchAsNormal(desktop);
             }
+        }
+        #endregion
+
+        #region Scan Diagnostics
+        /// <summary>
+        ///     Headless diagnostic entry: `SourceGit --scan-log <dir> [--log <file>]` scans the
+        ///     directory with the exact scanner used by the project tree, writes a trace and
+        ///     exits. Used to tell a "slow scan" apart from a "scan finds nothing" failure.
+        /// </summary>
+        private static bool TryRunScanCommand(string[] args, out int exitCode)
+        {
+            exitCode = 0;
+
+            if (args == null || args.Length < 2 || !args[0].Equals("--scan-log", StringComparison.Ordinal))
+                return false;
+
+            var target = args[1];
+            var logPath = Path.Combine(Path.GetTempPath(), "sourcegit_scan.log");
+            if (args.Length >= 4 && args[2].Equals("--log", StringComparison.Ordinal))
+                logPath = args[3];
+
+            Models.ScanLog.Open(logPath);
+            Models.ScanLog.Write($"headless scan: target='{target}' log='{logPath}'");
+
+            // In GUI mode this is assigned while loading preferences. Headless runs must do
+            // it explicitly, otherwise every git process fails to start and is dropped.
+            Native.OS.GitExecutable = Native.OS.FindGitExecutable();
+            Models.ScanLog.Write($"headless scan: git executable='{Native.OS.GitExecutable}'");
+
+            try
+            {
+                var repos = Models.RepositoryScanner.ScanAsync(target, new Models.ScanLogProgress(), new Models.ScanLogProgress())
+                    .GetAwaiter()
+                    .GetResult();
+
+                Models.ScanLog.Write($"headless scan: RESULT {repos.Count} repositories");
+                foreach (var repo in repos)
+                    Models.ScanLog.Write($"headless scan:   {repo}");
+            }
+            catch (Exception e)
+            {
+                Models.ScanLog.Write($"headless scan: EXCEPTION {e}");
+                exitCode = 2;
+            }
+
+            return true;
         }
         #endregion
 

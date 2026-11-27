@@ -41,8 +41,10 @@ namespace SourceGit
         {
             if (Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime { MainWindow: { } owner })
             {
+                WindowTrace.Write($"Preferences open(menu): ownerState={owner.WindowState} ownerBounds={owner.Bounds} ownerClient={owner.ClientSize}");
                 var dialog = new Views.Preferences();
                 await dialog.ShowDialog(owner);
+                WindowTrace.Write($"Preferences closed(menu): ownerState={owner.WindowState} ownerBounds={owner.Bounds} ownerClient={owner.ClientSize}");
             }
         });
 
