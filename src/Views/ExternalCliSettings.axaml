@@ -1,0 +1,123 @@
+<v:ChromelessWindow xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:v="using:SourceGit.Views"
+                    xmlns:vm="using:SourceGit.ViewModels"
+                    xmlns:ai="using:SourceGit.AI"
+                    x:Class="SourceGit.Views.ExternalCliSettings"
+                    x:DataType="vm:Preferences"
+                    x:Name="ThisControl"
+                    Icon="/App.ico"
+                    Title="{DynamicResource Text.ExternalCLI.Configure}"
+                    Width="690" Height="610" MinWidth="510" MinHeight="380"
+                    WindowStartupLocation="CenterOwner">
+  <Grid RowDefinitions="Auto,*,Auto">
+    <Grid Height="28" IsVisible="{Binding !#ThisControl.UseSystemWindowFrame}">
+      <Border Background="{DynamicResource Brush.TitleBar}" PointerPressed="BeginMoveWindow"/>
+      <TextBlock Classes="bold" HorizontalAlignment="Center" VerticalAlignment="Center"
+                 IsHitTestVisible="False" Text="{DynamicResource Text.ExternalCLI.Configure}"/>
+      <v:CaptionButtons HorizontalAlignment="Right" IsCloseButtonOnly="True"
+                        IsVisible="{OnPlatform True, macOS=False}"/>
+    </Grid>
+
+    <Grid Grid.Row="1" ColumnDefinitions="170,*" Margin="12">
+      <Grid RowDefinitions="*,Auto">
+        <ListBox x:Name="Profiles" ItemsSource="{Binding ExternalCliProfiles}" SelectionMode="Single">
+          <ListBox.ItemTemplate>
+            <DataTemplate x:DataType="ai:ExternalCliProfile">
+              <TextBlock Text="{Binding Name}" TextTrimming="CharacterEllipsis"/>
+            </DataTemplate>
+          </ListBox.ItemTemplate>
+        </ListBox>
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,6,0,0" Spacing="4">
+          <Button Classes="icon_button" Click="OnAddProfile" ToolTip.Tip="{DynamicResource Text.ExternalCLI.Add}">
+            <Path Width="14" Height="14" Data="{StaticResource Icons.Plus}"/>
+          </Button>
+          <Button Classes="icon_button" Click="OnRemoveProfile" ToolTip.Tip="{DynamicResource Text.ExternalCLI.Remove}">
+            <Path Width="14" Height="14" Data="{StaticResource Icons.Minus}"/>
+          </Button>
+        </StackPanel>
+      </Grid>
+
+      <ScrollViewer Grid.Column="1" Margin="14,0,0,0" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+        <StackPanel Spacing="10">
+          <TextBlock Text="{DynamicResource Text.ExternalCLI.Help}" TextWrapping="Wrap"
+                     Foreground="{DynamicResource Brush.FG2}"/>
+          <ContentControl Content="{Binding #Profiles.SelectedItem}" HorizontalContentAlignment="Stretch">
+            <ContentControl.ContentTemplate>
+              <DataTemplate x:DataType="ai:ExternalCliProfile">
+                <StackPanel Spacing="6">
+                  <TextBlock Text="{DynamicResource Text.Preferences.AI.Name}"/>
+                  <TextBox Text="{Binding Name, Mode=TwoWay}"/>
+                  <TextBlock Text="{DynamicResource Text.ExternalCLI.Executable}"/>
+                  <TextBox Text="{Binding Executable, Mode=TwoWay}"/>
+                  <TextBlock Text="{DynamicResource Text.ExternalCLI.Arguments}"/>
+                  <TextBox Text="{Binding Arguments, Mode=TwoWay}" MinHeight="68" AcceptsReturn="True"
+                           FontFamily="{DynamicResource Fonts.Monospace}" VerticalContentAlignment="Top"/>
+                  <TextBlock IsVisible="{Binding LegacyArguments, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                             Text="{DynamicResource Text.ExternalCLI.LegacyArguments}" TextWrapping="Wrap"/>
+                  <TextBox IsVisible="{Binding LegacyArguments, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                           IsReadOnly="True" Text="{Binding LegacyArguments}" TextWrapping="Wrap"/>
+                  <WrapPanel>
+                    <CheckBox Content="{DynamicResource Text.ExternalCLI.Commit}" IsChecked="{Binding CanGenerateCommit, Mode=TwoWay}"/>
+                    <CheckBox Margin="12,0,0,0" Content="{DynamicResource Text.DiffAnalysis}" IsChecked="{Binding CanAnalyze, Mode=TwoWay}"/>
+                  </WrapPanel>
+                  <CheckBox Content="{DynamicResource Text.ExternalCLI.PromptFile}" IsChecked="{Binding UsePromptFile, Mode=TwoWay}"/>
+                  <CheckBox Content="{DynamicResource Text.ExternalCLI.StructuredOutput}" IsChecked="{Binding StructuredOutput, Mode=TwoWay}"/>
+                  <TextBlock Text="{DynamicResource Text.ExternalCLI.ResumeArguments}"/>
+                  <TextBox Text="{Binding ResumeArguments, Mode=TwoWay}" MinHeight="53" AcceptsReturn="True"
+                           FontFamily="{DynamicResource Fonts.Monospace}" VerticalContentAlignment="Top"/>
+                  <Expander Header="{DynamicResource Text.ExternalCLI.ChatOptions}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                    <StackPanel Spacing="6" Margin="0,4,0,2">
+                      <TextBlock Text="{DynamicResource Text.ExternalCLI.ChatOptionsHelp}" TextWrapping="Wrap" Foreground="{DynamicResource Brush.FG2}"/>
+                      <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                        <StackPanel Spacing="5">
+                          <TextBlock Text="{DynamicResource Text.ExternalCLI.ChatModels}"/>
+                          <TextBox Text="{Binding ChatModels, Mode=TwoWay}" MinHeight="60" AcceptsReturn="True" VerticalContentAlignment="Top"/>
+                          <TextBlock Text="{DynamicResource Text.ExternalCLI.ChatModelArguments}"/>
+                          <TextBox Text="{Binding ChatModelArguments, Mode=TwoWay}" MinHeight="49" AcceptsReturn="True" VerticalContentAlignment="Top"
+                                   FontFamily="{DynamicResource Fonts.Monospace}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Spacing="5">
+                          <TextBlock Text="{DynamicResource Text.ExternalCLI.ChatEfforts}"/>
+                          <TextBox Text="{Binding ChatEfforts, Mode=TwoWay}" MinHeight="60" AcceptsReturn="True" VerticalContentAlignment="Top"/>
+                          <TextBlock Text="{DynamicResource Text.ExternalCLI.ChatEffortArguments}"/>
+                          <TextBox Text="{Binding ChatEffortArguments, Mode=TwoWay}" MinHeight="49" AcceptsReturn="True" VerticalContentAlignment="Top"
+                                   FontFamily="{DynamicResource Fonts.Monospace}"/>
+                        </StackPanel>
+                      </Grid>
+                    </StackPanel>
+                  </Expander>
+                  <Expander Header="{DynamicResource Text.ExternalCLI.ChatSkills}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                    <StackPanel Spacing="6" Margin="0,4,0,2">
+                      <TextBlock Text="{DynamicResource Text.ExternalCLI.ChatSkillsHelp}" TextWrapping="Wrap" Foreground="{DynamicResource Brush.FG2}"/>
+                      <TextBlock Text="{DynamicResource Text.ExternalCLI.ChatSkillListArguments}"/>
+                      <TextBox Text="{Binding ChatSkillListArguments, Mode=TwoWay}" MinHeight="60" AcceptsReturn="True"
+                               FontFamily="{DynamicResource Fonts.Monospace}" VerticalContentAlignment="Top"/>
+                      <TextBlock Text="{DynamicResource Text.ExternalCLI.ChatSkillArguments}"/>
+                      <TextBox Text="{Binding ChatSkillArguments, Mode=TwoWay}" MinHeight="49" AcceptsReturn="True"
+                               FontFamily="{DynamicResource Fonts.Monospace}" VerticalContentAlignment="Top"/>
+                    </StackPanel>
+                  </Expander>
+                  <CheckBox Content="{DynamicResource Text.ExternalCLI.ResumeGeneration}" IsChecked="{Binding ResumeGeneration, Mode=TwoWay}"/>
+                  <TextBlock Text="{DynamicResource Text.Preferences.AI.AdditionalPrompt}"/>
+                  <TextBox Text="{Binding AdditionalPrompt, Mode=TwoWay}" MinHeight="62" AcceptsReturn="True"
+                           TextWrapping="Wrap" VerticalContentAlignment="Top"/>
+                </StackPanel>
+              </DataTemplate>
+            </ContentControl.ContentTemplate>
+          </ContentControl>
+          <Grid ColumnDefinitions="*,Auto">
+            <TextBlock VerticalAlignment="Center" Text="{DynamicResource Text.Preferences.AI.CommitMessageRule}"/>
+            <Button Grid.Column="1" Classes="flat" Click="OnResetCommitMessageRule"
+                    Content="{DynamicResource Text.Preferences.AI.CommitMessageRule.Reset}"/>
+          </Grid>
+          <TextBox Text="{Binding CommitMessageRule, Mode=TwoWay}" MinHeight="80" AcceptsReturn="True"
+                   TextWrapping="Wrap" VerticalContentAlignment="Top"/>
+        </StackPanel>
+      </ScrollViewer>
+    </Grid>
+
+    <Button Grid.Row="2" Margin="12,0,12,12" Classes="flat primary" HorizontalAlignment="Right"
+            Content="{DynamicResource Text.Close}" Click="OnClose"/>
+  </Grid>
+</v:ChromelessWindow>

@@ -13,6 +13,8 @@
   <x:String x:Key="Text.AddWorktree.Name" xml:space="preserve">Branch Name:</x:String>
   <x:String x:Key="Text.AddWorktree.Name.Placeholder" xml:space="preserve">Optional. Default is the destination folder name.</x:String>
   <x:String x:Key="Text.AIAssistant" xml:space="preserve">AI Assistant</x:String>
+  <x:String x:Key="Text.AIAssistant.NoApiServices" xml:space="preserve">Add an API service in Preferences → AI.</x:String>
+  <x:String x:Key="Text.AIAssistant.SelectService" xml:space="preserve">Select an AI service</x:String>
   <x:String x:Key="Text.AIAssistant.Model" xml:space="preserve">MODEL</x:String>
   <x:String x:Key="Text.AIAssistant.Regen" xml:space="preserve">RE-GENERATE</x:String>
   <x:String x:Key="Text.AIAssistant.Tip" xml:space="preserve">Use AI to generate commit message</x:String>
@@ -98,6 +100,16 @@
   <x:String x:Key="Text.BranchTree.Tracking" xml:space="preserve">TRACKING</x:String>
   <x:String x:Key="Text.BranchTree.URL" xml:space="preserve">URL</x:String>
   <x:String x:Key="Text.BranchTree.Worktree" xml:space="preserve">WORKTREE</x:String>
+  <x:String x:Key="Text.BranchWorkflow.CommitFailed" xml:space="preserve">Branch {0} was created. Review the Git log, then continue the commit.</x:String>
+  <x:String x:Key="Text.BranchWorkflow.Confirm" xml:space="preserve">Create branch {0} and commit the {1} staged file(s)?&#10;&#10;{2}</x:String>
+  <x:String x:Key="Text.BranchWorkflow.ConfirmContinue" xml:space="preserve">Commit the {1} staged file(s) on {0}?&#10;&#10;{2}</x:String>
+  <x:String x:Key="Text.BranchWorkflow.Continue" xml:space="preserve">Continue commit</x:String>
+  <x:String x:Key="Text.BranchWorkflow.Create" xml:space="preserve">Create branch and commit</x:String>
+  <x:String x:Key="Text.BranchWorkflow.CreateFailed" xml:space="preserve">Could not create the branch. Check its name and the Git log.</x:String>
+  <x:String x:Key="Text.BranchWorkflow.Name" xml:space="preserve">Branch name</x:String>
+  <x:String x:Key="Text.BranchWorkflow.NotReady" xml:space="preserve">Finish the current Git operation and check the branch name before committing on a new branch.</x:String>
+  <x:String x:Key="Text.BranchWorkflow.Stale" xml:space="preserve">The branch or staged changes have changed. Generate again to review the current changes.</x:String>
+  <x:String x:Key="Text.BranchWorkflow.Template" xml:space="preserve">Branch name template</x:String>
   <x:String x:Key="Text.Cancel" xml:space="preserve">CANCEL</x:String>
   <x:String x:Key="Text.ChangeCM.CheckoutFirstParentRevision" xml:space="preserve">Reset to Parent Revision</x:String>
   <x:String x:Key="Text.ChangeCM.CheckoutThisRevision" xml:space="preserve">Reset to This Revision</x:String>
@@ -374,6 +386,69 @@
   <x:String x:Key="Text.DeleteTag" xml:space="preserve">Delete Tag</x:String>
   <x:String x:Key="Text.DeleteTag.Tag" xml:space="preserve">Tag:</x:String>
   <x:String x:Key="Text.DeleteTag.WithRemote" xml:space="preserve">Delete from remote repositories</x:String>
+  <x:String x:Key="Text.AIChat" xml:space="preserve">AI Chat</x:String>
+  <x:String x:Key="Text.AIChat.Added" xml:space="preserve">Added {0} context item(s).</x:String>
+  <x:String x:Key="Text.AIChat.AlreadyAdded" xml:space="preserve">Already attached to this draft.</x:String>
+  <x:String x:Key="Text.AIChat.Attach" xml:space="preserve">Add to AI Chat</x:String>
+  <x:String x:Key="Text.AIChat.AttachmentLimit" xml:space="preserve">The draft reached its context limit.</x:String>
+  <x:String x:Key="Text.AIChat.Busy" xml:space="preserve">Wait for the current request or stop it first.</x:String>
+  <x:String x:Key="Text.AIChat.CaptureFailed" xml:space="preserve">Could not read the selected changes. {0}</x:String>
+  <x:String x:Key="Text.AIChat.Capturing" xml:space="preserve">Capturing the selected changes…</x:String>
+  <x:String x:Key="Text.AIChat.ClosePreview" xml:space="preserve">Close snapshot preview</x:String>
+  <x:String x:Key="Text.AIChat.DefaultQuestion" xml:space="preserve">Analyze the impact of these changes.</x:String>
+  <x:String x:Key="Text.AIChat.Draft" xml:space="preserve">Ask about the selected changes…</x:String>
+  <x:String x:Key="Text.AIChat.DraftWithSkills" xml:space="preserve">Ask about the selected changes or type / for skills…</x:String>
+  <x:String x:Key="Text.AIChat.Skill" xml:space="preserve">Skill</x:String>
+  <x:String x:Key="Text.AIChat.Skills" xml:space="preserve">CLI skills</x:String>
+  <x:String x:Key="Text.AIChat.RemoveSkill" xml:space="preserve">Remove skill</x:String>
+  <x:String x:Key="Text.AIChat.SkillsLoading" xml:space="preserve">Loading skills…</x:String>
+  <x:String x:Key="Text.AIChat.SkillsEmpty" xml:space="preserve">No matching skills.</x:String>
+  <x:String x:Key="Text.AIChat.SkillsError" xml:space="preserve">Could not load skills. {0}</x:String>
+  <x:String x:Key="Text.AIChat.DraftKept" xml:space="preserve">Draft and context kept.</x:String>
+  <x:String x:Key="Text.AIChat.Effort" xml:space="preserve">Reasoning effort</x:String>
+  <x:String x:Key="Text.AIChat.Empty" xml:space="preserve">Right-click a change or a commit and choose AI → Add to AI Chat.</x:String>
+  <x:String x:Key="Text.AIChat.Hide" xml:space="preserve">Close AI Chat panel</x:String>
+  <x:String x:Key="Text.AIChat.History" xml:space="preserve">History</x:String>
+  <x:String x:Key="Text.AIChat.LoadFailed" xml:space="preserve">Some local conversations could not be loaded.</x:String>
+  <x:String x:Key="Text.AIChat.Model" xml:space="preserve">Model</x:String>
+  <x:String x:Key="Text.AIChat.New" xml:space="preserve">New chat</x:String>
+  <x:String x:Key="Text.AIChat.Pending" xml:space="preserve">Pending context · {0}</x:String>
+  <x:String x:Key="Text.AIChat.ProviderDefault" xml:space="preserve">CLI default</x:String>
+  <x:String x:Key="Text.AIChat.Remove" xml:space="preserve">Remove attachment</x:String>
+  <x:String x:Key="Text.AIChat.Running" xml:space="preserve">Analyzing changes…</x:String>
+  <x:String x:Key="Text.AIChat.SaveFailed" xml:space="preserve">Could not save this conversation locally.</x:String>
+  <x:String x:Key="Text.AIChat.Search" xml:space="preserve">Search this worktree’s conversations</x:String>
+  <x:String x:Key="Text.AIChat.Send" xml:space="preserve">Send</x:String>
+  <x:String x:Key="Text.AIChat.SendShortcut" xml:space="preserve">Enter to send · Shift+Enter for a new line</x:String>
+  <x:String x:Key="Text.AIChat.Source.Commit" xml:space="preserve">Commit</x:String>
+  <x:String x:Key="Text.AIChat.Source.Revision" xml:space="preserve">Revision diff</x:String>
+  <x:String x:Key="Text.AIChat.Source.Staged" xml:space="preserve">Staged</x:String>
+  <x:String x:Key="Text.AIChat.Source.Unstaged" xml:space="preserve">Unstaged</x:String>
+  <x:String x:Key="Text.DiffAnalysis" xml:space="preserve">Analysis</x:String>
+  <x:String x:Key="Text.DiffAnalysis.Ask" xml:space="preserve">Ask</x:String>
+  <x:String x:Key="Text.DiffAnalysis.CopySelection" xml:space="preserve">Copy selection</x:String>
+  <x:String x:Key="Text.DiffAnalysis.CopyMarkdown" xml:space="preserve">Copy answer Markdown</x:String>
+  <x:String x:Key="Text.DiffAnalysis.CopyTranscript" xml:space="preserve">Copy full transcript</x:String>
+  <x:String x:Key="Text.DiffAnalysis.Error" xml:space="preserve">Analysis failed: {0}</x:String>
+  <x:String x:Key="Text.DiffAnalysis.FileCount" xml:space="preserve">{0} selected file(s)</x:String>
+  <x:String x:Key="Text.DiffAnalysis.NoChanges" xml:space="preserve">No changes were found in this selection.</x:String>
+  <x:String x:Key="Text.DiffAnalysis.NoProfiles" xml:space="preserve">Set up a CLI profile for analysis to get started.</x:String>
+  <x:String x:Key="Text.DiffAnalysis.NonText" xml:space="preserve">Some changes only provide file metadata. Their contents are outside the text analysis scope.</x:String>
+  <x:String x:Key="Text.DiffAnalysis.Question" xml:space="preserve">Question: {0}</x:String>
+  <x:String x:Key="Text.DiffAnalysis.QuestionPlaceholder" xml:space="preserve">Ask about this change…</x:String>
+  <x:String x:Key="Text.DiffAnalysis.Reading" xml:space="preserve">Reading changes…</x:String>
+  <x:String x:Key="Text.DiffAnalysis.Ready" xml:space="preserve">Choose a CLI and click Start analysis.</x:String>
+  <x:String x:Key="Text.DiffAnalysis.Restarted" xml:space="preserve">Started a new conversation for this change.</x:String>
+  <x:String x:Key="Text.DiffAnalysis.Retry" xml:space="preserve">Retry</x:String>
+  <x:String x:Key="Text.DiffAnalysis.Start" xml:space="preserve">Start analysis</x:String>
+  <x:String x:Key="Text.DiffAnalysis.Stop" xml:space="preserve">Stop</x:String>
+  <x:String x:Key="Text.DiffAnalysis.Stopped" xml:space="preserve">Analysis stopped.</x:String>
+  <x:String x:Key="Text.DiffAnalysis.Thinking" xml:space="preserve">Thinking</x:String>
+  <x:String x:Key="Text.DiffAnalysis.ToolCall" xml:space="preserve">Tool call</x:String>
+  <x:String x:Key="Text.DiffAnalysis.ToolResult" xml:space="preserve">Tool result</x:String>
+  <x:String x:Key="Text.DiffAnalysis.TraceError" xml:space="preserve">CLI error</x:String>
+  <x:String x:Key="Text.DiffAnalysis.TraceStarted" xml:space="preserve">Analysis started.</x:String>
+  <x:String x:Key="Text.DiffAnalysis.Truncated" xml:space="preserve">This diff excerpt was truncated.</x:String>
   <x:String x:Key="Text.Diff.Binary" xml:space="preserve">BINARY DIFF</x:String>
   <x:String x:Key="Text.Diff.Binary.ViewContentOfNew" xml:space="preserve">VIEW NEW CONTENT</x:String>
   <x:String x:Key="Text.Diff.EmptyFile" xml:space="preserve">EMPTY FILE</x:String>
@@ -432,6 +507,45 @@
   <x:String x:Key="Text.EditRepositoryNode.TitleForRepository" xml:space="preserve">Edit Selected Repository</x:String>
   <x:String x:Key="Text.ExecuteCustomAction.Target" xml:space="preserve">Target:</x:String>
   <x:String x:Key="Text.ExecuteCustomAction.Repository" xml:space="preserve">This repository</x:String>
+  <x:String x:Key="Text.ExternalCLI.Add" xml:space="preserve">Add profile</x:String>
+  <x:String x:Key="Text.ExternalCLI.Arguments" xml:space="preserve">Arguments (one per line)</x:String>
+  <x:String x:Key="Text.ExternalCLI.ChatOptions" xml:space="preserve">AI Chat model and effort</x:String>
+  <x:String x:Key="Text.ExternalCLI.ChatOptionsHelp" xml:space="preserve">Enter supported values and arguments one per line. Use {model} and {effort} in their corresponding arguments.</x:String>
+  <x:String x:Key="Text.ExternalCLI.ChatModels" xml:space="preserve">Model choices</x:String>
+  <x:String x:Key="Text.ExternalCLI.ChatModelArguments" xml:space="preserve">Model arguments</x:String>
+  <x:String x:Key="Text.ExternalCLI.ChatEfforts" xml:space="preserve">Effort choices</x:String>
+  <x:String x:Key="Text.ExternalCLI.ChatEffortArguments" xml:space="preserve">Effort arguments</x:String>
+  <x:String x:Key="Text.ExternalCLI.ChatSkills" xml:space="preserve">AI Chat skills</x:String>
+  <x:String x:Key="Text.ExternalCLI.ChatSkillsHelp" xml:space="preserve">Configure a command that lists skills as a JSON array, and the arguments to add after a skill is selected. Enter one argument per line and use {skill} for its ID.</x:String>
+  <x:String x:Key="Text.ExternalCLI.ChatSkillListArguments" xml:space="preserve">Skill list arguments</x:String>
+  <x:String x:Key="Text.ExternalCLI.ChatSkillArguments" xml:space="preserve">Use skill arguments</x:String>
+  <x:String x:Key="Text.ExternalCLI.Commit" xml:space="preserve">Commit message generation</x:String>
+  <x:String x:Key="Text.ExternalCLI.Configure" xml:space="preserve">External CLI profiles</x:String>
+  <x:String x:Key="Text.ExternalCLI.DiffError" xml:space="preserve">Could not read the diff. {0}</x:String>
+  <x:String x:Key="Text.ExternalCLI.EmptyOutput" xml:space="preserve">The command returned no answer.</x:String>
+  <x:String x:Key="Text.ExternalCLI.Executable" xml:space="preserve">Executable</x:String>
+  <x:String x:Key="Text.ExternalCLI.ExecutableNotFound" xml:space="preserve">Could not find an executable for “{0}”. Use a path or a name from PATH. For scripts, configure their interpreter.</x:String>
+  <x:String x:Key="Text.ExternalCLI.ExitError" xml:space="preserve">The command exited with code {0}.</x:String>
+  <x:String x:Key="Text.ExternalCLI.FirstProfile" xml:space="preserve">First available profile</x:String>
+  <x:String x:Key="Text.ExternalCLI.Generate" xml:space="preserve">Generate</x:String>
+  <x:String x:Key="Text.ExternalCLI.Generating" xml:space="preserve">Generating with {0}…</x:String>
+  <x:String x:Key="Text.ExternalCLI.Help" xml:space="preserve">SourceGit runs the configured command in this worktree with your user permissions. Configure a headless, read-only command for AI tasks. The command may send the supplied diff to its provider.</x:String>
+  <x:String x:Key="Text.ExternalCLI.InvalidArguments" xml:space="preserve">Check the placeholders. Prompt-file mode requires {promptFile} in Arguments. Session arguments require {sessionId} and JSONL output.</x:String>
+  <x:String x:Key="Text.ExternalCLI.InvalidOutput" xml:space="preserve">The command returned invalid SourceGit JSONL output.</x:String>
+  <x:String x:Key="Text.ExternalCLI.LegacyArguments" xml:space="preserve">Previous arguments. Copy the options you still need as individual arguments, then enable this profile’s tasks.</x:String>
+  <x:String x:Key="Text.ExternalCLI.NewProfile" xml:space="preserve">New CLI profile</x:String>
+  <x:String x:Key="Text.ExternalCLI.NoChanges" xml:space="preserve">There are no staged changes in this scope.</x:String>
+  <x:String x:Key="Text.ExternalCLI.OutputLimit" xml:space="preserve">The command exceeded the output limit.</x:String>
+  <x:String x:Key="Text.ExternalCLI.Preferred" xml:space="preserve">Preferred CLI profile</x:String>
+  <x:String x:Key="Text.ExternalCLI.PromptFile" xml:space="preserve">Read the prompt from {promptFile} instead of stdin</x:String>
+  <x:String x:Key="Text.ExternalCLI.ReadingDiff" xml:space="preserve">Reading staged changes…</x:String>
+  <x:String x:Key="Text.ExternalCLI.Ready" xml:space="preserve">Generate a commit subject from the staged changes.</x:String>
+  <x:String x:Key="Text.ExternalCLI.Remove" xml:space="preserve">Remove profile</x:String>
+  <x:String x:Key="Text.ExternalCLI.ResumeArguments" xml:space="preserve">Resume arguments (optional, one per line, include {sessionId})</x:String>
+  <x:String x:Key="Text.ExternalCLI.ResumeGeneration" xml:space="preserve">Resume generation conversations</x:String>
+  <x:String x:Key="Text.ExternalCLI.StartError" xml:space="preserve">Could not start the command. {0}</x:String>
+  <x:String x:Key="Text.ExternalCLI.StructuredOutput" xml:space="preserve">Read SourceGit JSONL output</x:String>
+  <x:String x:Key="Text.ExternalCLI.TimeoutError" xml:space="preserve">The command timed out after {0} seconds.</x:String>
   <x:String x:Key="Text.Fetch" xml:space="preserve">Fetch</x:String>
   <x:String x:Key="Text.Fetch.AllRemotes" xml:space="preserve">Fetch all remotes</x:String>
   <x:String x:Key="Text.Fetch.Force" xml:space="preserve">Force override local refs</x:String>
@@ -680,6 +794,8 @@
   <x:String x:Key="Text.Preferences.AI" xml:space="preserve">AI</x:String>
   <x:String x:Key="Text.Preferences.AI.AdditionalPrompt" xml:space="preserve">Additional Prompt (Use `-` to list your requirements)</x:String>
   <x:String x:Key="Text.Preferences.AI.ApiKey" xml:space="preserve">API Key</x:String>
+  <x:String x:Key="Text.Preferences.AI.CommitMessageRule" xml:space="preserve">Commit Message Rules</x:String>
+  <x:String x:Key="Text.Preferences.AI.CommitMessageRule.Reset" xml:space="preserve">Restore Defaults</x:String>
   <x:String x:Key="Text.Preferences.AI.ExtraHeaders" xml:space="preserve">Extra Headers (one `Name: Value` per line)</x:String>
   <x:String x:Key="Text.Preferences.AI.Model" xml:space="preserve">Model</x:String>
   <x:String x:Key="Text.Preferences.AI.Model.AutoFetchAvailableModels" xml:space="preserve">Fetch available model-ids automatically</x:String>

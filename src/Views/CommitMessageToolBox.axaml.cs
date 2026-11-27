@@ -627,53 +627,16 @@ namespace SourceGit.Views
             e.Handled = true;
         }
 
-        private void OnOpenOpenAIHelper(object sender, RoutedEventArgs e)
+        private void OnOpenAIHelper(object sender, RoutedEventArgs e)
         {
             if (DataContext is ViewModels.WorkingCopy vm && sender is Button button && _showAdvancedOptions)
             {
-                var repo = vm.Repository;
-
                 if (vm.Staged == null || vm.Staged.Count == 0)
-                {
-                    repo.SendNotification("No files added to commit!", true);
-                    e.Handled = true;
-                    return;
-                }
-
-                var services = repo.GetPreferredOpenAIServices();
-                if (services.Count == 0)
-                {
-                    repo.SendNotification("Bad configuration for OpenAI", true);
-                    e.Handled = true;
-                    return;
-                }
-
-                if (services.Count == 1)
-                {
-                    DoOpenAIAssistant(repo, services[0], vm.Staged);
-                    e.Handled = true;
-                    return;
-                }
-
-                var menu = new ContextMenu();
-                foreach (var service in services)
-                {
-                    var dup = service;
-                    var item = new MenuItem();
-                    item.Header = service.Name;
-                    item.Click += (_, ev) =>
-                    {
-                        DoOpenAIAssistant(repo, dup, vm.Staged);
-                        ev.Handled = true;
-                    };
-
-                    menu.Items.Add(item);
-                }
-
-                button.IsEnabled = false;
-                menu.Placement = PlacementMode.TopEdgeAlignedLeft;
-                menu.Closed += (_, _) => button.IsEnabled = true;
-                menu.Open(button);
+                    vm.Repository.SendNotification("No files added to commit!", true);
+                else if (ViewModels.CommitAssistant.AvailableCliProfiles().Length > 0)
+                    AIAssistant.Open(this, vm.Repository, vm.Staged, allStaged: true);
+                else
+                    OpenApiAssistant(button, vm.Repository, vm.Staged);
             }
 
             e.Handled = true;
@@ -786,15 +749,35 @@ namespace SourceGit.Views
             e.Handled = true;
         }
 
-        private void DoOpenAIAssistant(ViewModels.Repository repo, AI.Service service, List<Models.Change> changes)
+        private void OpenApiAssistant(Button button, ViewModels.Repository repo, List<Models.Change> changes)
         {
-            var owner = TopLevel.GetTopLevel(this) as Window;
-            if (owner == null)
+            var services = repo.GetPreferredOpenAIServices();
+            if (services.Count == 0)
+            {
+                repo.SendNotification(App.Text("AIAssistant.NoApiServices"), true);
                 return;
+            }
 
-            var assistant = new ViewModels.AIAssistant(repo, service, changes);
-            var view = new AIAssistant() { DataContext = assistant };
-            view.Show(owner);
+            if (services.Count == 1)
+            {
+                AIAssistant.Open(this, repo, changes, services[0], allStaged: true);
+                return;
+            }
+
+            var menu = new ContextMenu() { Placement = PlacementMode.TopEdgeAlignedLeft };
+            foreach (var service in services)
+            {
+                var item = new MenuItem() { Header = service.Name };
+                item.Click += (_, e) =>
+                {
+                    AIAssistant.Open(this, repo, changes, service, allStaged: true);
+                    e.Handled = true;
+                };
+                menu.Items.Add(item);
+            }
+            menu.Closed += (_, _) => button.IsEnabled = true;
+            button.IsEnabled = false;
+            menu.Open(button);
         }
 
         private string _commitMessage = string.Empty;

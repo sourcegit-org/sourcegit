@@ -46,7 +46,7 @@ namespace SourceGit.ViewModels
                 if (SetProperty(ref _changeSelection, value))
                 {
                     if (value is { Count: 1, HasFolder: false })
-                        DiffContext = new DiffContext(_repo, new Models.DiffOption(_base.SHA, _to.SHA, value.Changes[0]), _diffContext);
+                        DiffContext = new DiffContext(_repo, CreateDiffOption(value.Changes[0]), _diffContext);
                     else
                         DiffContext = null;
                 }
@@ -89,6 +89,10 @@ namespace SourceGit.ViewModels
             SearchFilter = string.Empty;
         }
 
+        public string RepositoryPath => _repo;
+
+        public Models.DiffOption CreateDiffOption(Models.Change change) => new(_base.SHA, _to.SHA, change);
+
         public string GetAbsPath(string path)
         {
             return Native.OS.GetAbsPath(_repo, path);
@@ -96,7 +100,7 @@ namespace SourceGit.ViewModels
 
         public void OpenInExternalDiffTool(Models.Change change)
         {
-            new Commands.DiffTool(_repo, new Models.DiffOption(_base.SHA, _to.SHA, change)).Open();
+            new Commands.DiffTool(_repo, CreateDiffOption(change)).Open();
         }
 
         public async Task<bool> SaveChangesAsPatchAsync(List<Models.Change> changes, string saveTo)

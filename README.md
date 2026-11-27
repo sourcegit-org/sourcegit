@@ -202,6 +202,11 @@ For other AI service:
 * The `Server` should fill in a URL equivalent to OpenAI's `https://api.openai.com/v1`. For example, when using `Ollama`, it should be `http://localhost:11434/v1` instead of `http://localhost:11434/api/generate`
 * The `API Key` is optional that depends on the service
 
+## External AI commands
+
+Configure an external command under **Preferences → AI → External CLI profiles** to generate a commit subject or analyze changes.
+See [External AI commands](docs/external-ai.md) for input modes, example profiles, and the optional JSONL protocol.
+
 ## External Tools
 
 This app supports open repository in external tools listed in the table below.

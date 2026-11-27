@@ -231,6 +231,7 @@ namespace SourceGit.Views
                     menu.Items.Add(copyFullPath);
                 }
 
+                DiffAnalysis.AddSelectionMenu(menu, this, vm.RepositoryPath, selection.Changes, vm.CreateDiffOption);
                 menu.Open(sender as Control);
             }
 

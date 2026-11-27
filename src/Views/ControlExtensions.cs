@@ -57,6 +57,9 @@ namespace SourceGit.Views
             return null;
         }
 
+        internal static MenuItem CreateAIMenu(this Control control, MenuItem action) =>
+            new() { Header = "AI", Icon = control.CreateMenuIcon("Icons.AIAssist"), Items = { action } };
+
         public static void ShowWindow(this Control control, object data)
         {
             if (data == null)

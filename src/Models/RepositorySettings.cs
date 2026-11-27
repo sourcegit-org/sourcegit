@@ -48,6 +48,10 @@ namespace SourceGit.Models
             set;
         } = "---";
 
+        public Guid PreferredExternalCli { get; set; }
+
+        public string BranchNameTemplate { get; set; } = "{type}/{slug}";
+
         public AvaloniaList<CommitTemplate> CommitTemplates
         {
             get;

@@ -8,6 +8,8 @@ namespace SourceGit.ViewModels
 {
     public class DiffContext : ObservableObject
     {
+        public string RepositoryPath => _repo;
+
         public string Title
         {
             get;

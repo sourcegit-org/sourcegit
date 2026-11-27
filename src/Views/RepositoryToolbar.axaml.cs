@@ -18,6 +18,16 @@ namespace SourceGit.Views
             InitializeComponent();
         }
 
+        private void ToggleAIChat(object sender, RoutedEventArgs e)
+        {
+            var repository = this.FindAncestorOfType<LauncherPage>()?.FindDescendantOfType<Repository>();
+            if (repository != null && ReferenceEquals(repository.DataContext, DataContext))
+            {
+                repository.ToggleAIChat();
+                e.Handled = true;
+            }
+        }
+
         private void OpenWithExternalTools(object sender, RoutedEventArgs ev)
         {
             if (sender is Button button && DataContext is ViewModels.Repository repo)

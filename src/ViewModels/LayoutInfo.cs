@@ -47,6 +47,8 @@ namespace SourceGit.ViewModels
             set;
         } = 250;
 
+        public double AIChatWidth { get; set; } = 380;
+
         public bool IsSidebarCollapsedInLocalChanges
         {
             get => _isSidebarCollapsedInLocalChanges;

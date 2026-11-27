@@ -422,6 +422,12 @@ namespace SourceGit.Views
             UpdateGitVersion();
         }
 
+        private async void OnConfigureExternalCli(object sender, RoutedEventArgs e)
+        {
+            e.Handled = true;
+            await new ExternalCliSettings().ShowDialog(this);
+        }
+
         private void OnAddOpenAIService(object sender, RoutedEventArgs e)
         {
             var service = new AI.Service() { Name = "Unnamed Service" };

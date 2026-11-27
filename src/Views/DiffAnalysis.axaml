@@ -1,0 +1,17 @@
+<v:ChromelessWindow xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:v="using:SourceGit.Views"
+                    xmlns:vm="using:SourceGit.ViewModels"
+                    x:Class="SourceGit.Views.DiffAnalysis"
+                    x:DataType="vm:AIChat"
+                    x:Name="ThisWindow"
+                    Icon="/App.ico"
+                    Title="{DynamicResource Text.AIChat}"
+                    Width="610" Height="660" MinWidth="350" MinHeight="390"
+                    WindowStartupLocation="CenterOwner">
+  <Grid RowDefinitions="Auto,*">
+    <Border Height="24" Background="{DynamicResource Brush.TitleBar}" PointerPressed="BeginMoveWindow"
+            IsVisible="{Binding !#ThisWindow.UseSystemWindowFrame}"/>
+    <v:AIChatPanel Grid.Row="1" x:Name="Conversation"/>
+  </Grid>
+</v:ChromelessWindow>

@@ -735,33 +735,77 @@ namespace SourceGit.Views
 
         private void OnTextViewContextRequested(object sender, ContextRequestedEventArgs e)
         {
-            if (!CanCopyText())
+            var menu = new ContextMenu();
+            if (CanCopyText())
+            {
+                var copy = new MenuItem() { Header = App.Text("Copy"), Icon = this.CreateMenuIcon("Icons.Copy") };
+                copy.Click += async (_, ev) =>
+                {
+                    await CopyWithoutIndicatorsAsync();
+                    ev.Handled = true;
+                };
+
+                var copyAsPatch = new MenuItem() { Header = App.Text("CopyAsPatch"), Icon = this.CreateMenuIcon("Icons.Copy") };
+                copyAsPatch.Click += async (_, ev) =>
+                {
+                    await CopyAsPatchAsync();
+                    ev.Handled = true;
+                };
+
+                menu.Items.Add(copy);
+                menu.Items.Add(copyAsPatch);
+            }
+
+            var analysis = CreateAnalysisMenu(e);
+            if (analysis != null)
+            {
+                if (menu.Items.Count > 0)
+                    menu.Items.Add(new MenuItem() { Header = "-" });
+                menu.Items.Add(analysis);
+            }
+
+            if (menu.Items.Count == 0)
                 return;
 
-            var copy = new MenuItem();
-            copy.Header = App.Text("Copy");
-            copy.Icon = this.CreateMenuIcon("Icons.Copy");
-            copy.Click += async (_, ev) =>
-            {
-                await CopyWithoutIndicatorsAsync();
-                ev.Handled = true;
-            };
-
-            var copyAsPatch = new MenuItem();
-            copyAsPatch.Header = App.Text("CopyAsPatch");
-            copyAsPatch.Icon = this.CreateMenuIcon("Icons.Copy");
-            copyAsPatch.Click += async (_, ev) =>
-            {
-                await CopyAsPatchAsync();
-                ev.Handled = true;
-            };
-
-            var menu = new ContextMenu();
-            menu.Items.Add(copy);
-            menu.Items.Add(copyAsPatch);
             menu.Open(TextArea.TextView);
-
             e.Handled = true;
+        }
+
+        private MenuItem CreateAnalysisMenu(ContextRequestedEventArgs e)
+        {
+            if (DataContext is not ViewModels.TextDiffContext context ||
+                this.FindAncestorOfType<DiffView>()?.DataContext is not ViewModels.DiffContext diff)
+                return null;
+
+            var selection = TextArea.Selection;
+            var hasSelection = !selection.IsEmpty;
+            int start;
+            int end;
+            if (hasSelection)
+            {
+                var first = selection.StartPosition;
+                var last = selection.EndPosition;
+                if (first.Location > last.Location)
+                    (first, last) = (last, first);
+
+                start = first.Line - 1;
+                end = last.Line - 1;
+                if (end > start && last.Column == 1)
+                    end--;
+            }
+            else
+            {
+                var view = TextArea.TextView;
+                start = end = e.TryGetPosition(view, out var position)
+                    ? (view.GetPositionFloor(position + new Vector(view.HorizontalOffset, view.VerticalOffset))?.Line ?? 0) - 1
+                    : TextArea.Caret.Line - 1;
+            }
+
+            var snapshot = ViewModels.DiffAnalysisSnapshot.Create(context, start, end, hasSelection, IsOld);
+            if (snapshot == null)
+                return null;
+
+            return DiffAnalysis.CreateLineMenu(this, diff.RepositoryPath, context.Option, snapshot);
         }
 
         private void OnTextViewPointerChanged(object sender, PointerEventArgs e)

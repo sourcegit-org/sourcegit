@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -52,6 +53,7 @@ namespace SourceGit.Views
             HorizontalScrollBarVisibility = ScrollBarVisibility.Auto;
             VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
 
+            TextArea.TextView.LineTransformers.Add(new LineStyleTransformer());
             TextArea.TextView.Margin = new Thickness(4, 0);
             TextArea.TextView.Options.EnableHyperlinks = false;
             TextArea.TextView.Options.EnableEmailHyperlinks = false;
@@ -67,7 +69,6 @@ namespace SourceGit.Views
             {
                 _textMate = Models.TextMateHelper.CreateForEditor(this);
                 Models.TextMateHelper.SetGrammarByFileName(_textMate, "README.md");
-                TextArea.TextView.LineTransformers.Add(new LineStyleTransformer());
             }
         }
 
@@ -98,7 +99,7 @@ namespace SourceGit.Views
 
         private void OnTextViewContextRequested(object sender, ContextRequestedEventArgs e)
         {
-            if (DataContext is not ViewModels.AIAssistant vm)
+            if (DataContext is not ViewModels.IAssistant vm)
                 return;
 
             var selected = SelectedText;
@@ -141,24 +142,39 @@ namespace SourceGit.Views
             InitializeComponent();
         }
 
-        protected override async void OnOpened(EventArgs e)
+        public static void Open(Control control, ViewModels.Repository repo, List<Models.Change> changes, AI.Service selected = null, bool allStaged = false)
+        {
+            if (TopLevel.GetTopLevel(control) is not Window owner)
+                return;
+
+            var view = new AIAssistant() { DataContext = new ViewModels.CommitAssistant(repo, changes, selected, allStaged) };
+            view.Show(owner);
+            view.Activate();
+        }
+
+        protected override void OnOpened(EventArgs e)
         {
             base.OnOpened(e);
-
-            if (DataContext is ViewModels.AIAssistant vm)
-                await vm.GenAsync();
+            (DataContext as ViewModels.CommitAssistant)?.Open();
         }
 
         protected override void OnClosing(WindowClosingEventArgs e)
         {
             base.OnClosing(e);
-            (DataContext as ViewModels.AIAssistant)?.Cancel();
+            if (DataContext is ViewModels.CommitAssistant { Cli.IsCommitting: true })
+                e.Cancel = true;
+            if (!e.Cancel)
+                (DataContext as ViewModels.CommitAssistant)?.Close();
         }
 
         private void OnUseClicked(object sender, RoutedEventArgs e)
         {
-            if (DataContext is ViewModels.AIAssistant vm && !string.IsNullOrEmpty(vm.Response))
-                vm.Use(vm.Response);
+            if (sender is Control { DataContext: ViewModels.AIAssistant { Response.Length: > 0 } api })
+                api.Use(api.Response);
+            else if (sender is Control { DataContext: ViewModels.CliAssistant { Response.Length: > 0 } cli })
+                cli.Use(cli.Response);
+            else
+                return;
 
             Close();
             e.Handled = true;
@@ -166,10 +182,36 @@ namespace SourceGit.Views
 
         private async void OnRegenClicked(object sender, RoutedEventArgs e)
         {
-            if (DataContext is ViewModels.AIAssistant vm)
+            if (sender is Control { DataContext: ViewModels.AIAssistant vm })
                 await vm.GenAsync();
 
             e.Handled = true;
+        }
+
+        private async void OnGenerateClicked(object sender, RoutedEventArgs e)
+        {
+            if (sender is Control { DataContext: ViewModels.CliAssistant vm })
+                await vm.GenAsync();
+
+            e.Handled = true;
+        }
+
+        private void OnStopCliClicked(object sender, RoutedEventArgs e)
+        {
+            (DataContext as ViewModels.CommitAssistant)?.Cli?.Cancel();
+            e.Handled = true;
+        }
+
+        private async void OnCreateBranchClicked(object sender, RoutedEventArgs e)
+        {
+            e.Handled = true;
+            if (sender is not Control { DataContext: ViewModels.CliAssistant { CanCommitOnNewBranch: true } vm })
+                return;
+
+            var confirm = new Confirm();
+            confirm.SetData(vm.BranchConfirmation, Models.ConfirmButtonType.OkCancel);
+            if (await confirm.ShowDialog<bool>(this) && await vm.CommitOnNewBranchAsync())
+                Close();
         }
     }
 }

@@ -656,7 +656,7 @@ namespace SourceGit.ViewModels
 
         public async Task CommitAsync(bool autoStage, bool autoPush)
         {
-            if (string.IsNullOrWhiteSpace(_commitMessage))
+            if (IsCommitting || string.IsNullOrWhiteSpace(_commitMessage))
                 return;
 
             if (!_repo.CanCreatePopup())
@@ -709,12 +709,7 @@ namespace SourceGit.ViewModels
             if (autoStage && _unstaged.Count > 0)
                 await StageChangesAsync(_unstaged, null);
 
-            var log = _repo.CreateLog("Commit");
-            var succ = await new Commands.Commit(_repo.FullPath, _commitMessage, EnableSignOff, NoVerifyOnCommit, _useAmend, _resetAuthor)
-                    .Use(log)
-                    .RunAsync();
-
-            log.Complete();
+            var succ = await RunCommitAsync(_commitMessage);
 
             if (succ)
             {
@@ -738,6 +733,81 @@ namespace SourceGit.ViewModels
             _repo.MarkBranchesDirtyManually();
             _repo.RefreshSubmodules(); // Committing will not change submodule's HEAD (stage already changes it), So we need refresh submodules here manually.
             IsCommitting = false;
+        }
+
+        internal bool CanCommitOnNewBranch =>
+            !IsCommitting && !_repo.IsBare && !_useAmend && !HasUnsolvedConflicts && InProgressContext == null &&
+            _repo.CurrentBranch is { IsDetachedHead: false } &&
+            !File.Exists(Path.Combine(_repo.GitDir, "MERGE_HEAD")) &&
+            !File.Exists(Path.Combine(_repo.GitDir, "CHERRY_PICK_HEAD")) &&
+            !File.Exists(Path.Combine(_repo.GitDir, "REVERT_HEAD")) &&
+            !Directory.Exists(Path.Combine(_repo.GitDir, "rebase-merge")) &&
+            !Directory.Exists(Path.Combine(_repo.GitDir, "rebase-apply")) &&
+            !Directory.Exists(Path.Combine(_repo.GitDir, "sequencer"));
+
+        internal async Task<bool> CommitOnNewBranchAsync(Models.StagedCommitSnapshot preview, string name, string message,
+            bool continuing, Action onBranchCreated)
+        {
+            if (!CanCommitOnNewBranch || !_repo.CanCreatePopup() || !Models.RefName.IsValidBranchName(name) ||
+                continuing != string.Equals(preview.Branch, name, StringComparison.Ordinal))
+                throw new InvalidOperationException(App.Text("BranchWorkflow.NotReady"));
+
+            using var watcher = _repo.LockWatcher();
+            IsCommitting = true;
+            try
+            {
+                var current = await Models.StagedCommitSnapshot.ReadAsync(_repo.FullPath, default);
+                if (preview != current || current.FileCount == 0)
+                    throw new InvalidOperationException(App.Text("BranchWorkflow.Stale"));
+
+                if (!continuing)
+                {
+                    var log = _repo.CreateLog("Create Branch");
+                    try
+                    {
+                        if (!await new Commands.Checkout(_repo.FullPath).Use(log).BranchAsync(name.Quoted(), current.Head, false, false))
+                            throw new InvalidOperationException(App.Text("BranchWorkflow.CreateFailed"));
+                    }
+                    finally
+                    {
+                        log.Complete();
+                    }
+                    onBranchCreated();
+
+                    // A post-checkout hook may have changed the index.
+                    if (await Models.StagedCommitSnapshot.ReadAsync(_repo.FullPath, default) != (preview with { Branch = name }))
+                        throw new InvalidOperationException(App.Text("BranchWorkflow.Stale"));
+                }
+
+                CommitMessage = message;
+                _repo.UIStates.AddRecentCommitMessage(message);
+                if (!await RunCommitAsync(message))
+                    return false;
+
+                CommitMessage = string.Empty;
+                return true;
+            }
+            finally
+            {
+                _repo.MarkBranchesDirtyManually();
+                _repo.MarkWorkingCopyDirtyManually();
+                _repo.RefreshSubmodules();
+                IsCommitting = false;
+            }
+        }
+
+        private async Task<bool> RunCommitAsync(string message)
+        {
+            var log = _repo.CreateLog("Commit");
+            try
+            {
+                return await new Commands.Commit(_repo.FullPath, message, EnableSignOff, NoVerifyOnCommit, _useAmend, _resetAuthor)
+                    .Use(log).RunAsync();
+            }
+            finally
+            {
+                log.Complete();
+            }
         }
 
         private List<Models.Change> GetVisibleChanges(List<Models.Change> changes)

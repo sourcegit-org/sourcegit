@@ -99,6 +99,22 @@ namespace SourceGit.AI
             set;
         } = string.Empty;
 
+        // Retained for importing preferences from builds that stored CLI entries with API services.
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public string Backend { get; set; }
+
+        [JsonIgnore]
+        internal bool IsCliBackend => string.Equals(Backend, "cli", StringComparison.OrdinalIgnoreCase);
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public string ExecutablePath { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public string ExtraArguments { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+        public bool PersistConversation { get; set; }
+
         public OpenAIClient GetOpenAIClient()
         {
             if (string.IsNullOrEmpty(CachedApiKey))
@@ -120,6 +136,7 @@ namespace SourceGit.AI
                 options.AddPolicy(new ExtraHeadersPolicy(ExtraHeaders), PipelinePosition.PerCall);
             return new OpenAIClient(credential, options);
         }
+
 
         private string _name = string.Empty;
         private string _server = string.Empty;

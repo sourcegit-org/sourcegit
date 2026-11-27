@@ -76,7 +76,7 @@ namespace SourceGit.ViewModels
                 if (SetProperty(ref _changeSelection, value))
                 {
                     if (value is { Count: 1, HasFolder: false })
-                        DiffContext = new DiffContext(_repo.FullPath, new Models.DiffOption(_based, _to, value.Changes[0]), _diffContext);
+                        DiffContext = new DiffContext(_repo.FullPath, CreateDiffOption(value.Changes[0]), _diffContext);
                     else
                         DiffContext = null;
                 }
@@ -146,6 +146,10 @@ namespace SourceGit.ViewModels
             SearchFilter = string.Empty;
         }
 
+        public string RepositoryPath => _repo.FullPath;
+
+        public Models.DiffOption CreateDiffOption(Models.Change change) => new(_based, _to, change);
+
         public string GetAbsPath(string path)
         {
             return Native.OS.GetAbsPath(_repo.FullPath, path);
@@ -153,7 +157,7 @@ namespace SourceGit.ViewModels
 
         public void OpenInExternalDiffTool(Models.Change change)
         {
-            new Commands.DiffTool(_repo.FullPath, new Models.DiffOption(_based, _to, change)).Open();
+            new Commands.DiffTool(_repo.FullPath, CreateDiffOption(change)).Open();
         }
 
         public async Task ResetToLeftAsync(Models.Change change)

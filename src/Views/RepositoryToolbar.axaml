@@ -127,7 +127,7 @@
       <Button Width="0" Height="0" Click="FetchDirectlyByHotKey" IsVisible="False" HotKey="{OnPlatform Ctrl+Down, macOS=⌘+Down}"/>
     </StackPanel>
 
-    <Grid Grid.Column="3" HorizontalAlignment="Right" ColumnDefinitions="Auto,*,32,32,6">
+    <Grid Grid.Column="3" HorizontalAlignment="Right" ColumnDefinitions="Auto,*,32,32,32,6">
       <Path Grid.Column="0"
             Width="13" Height="13"
             Margin="18,0,0,0"
@@ -165,6 +165,11 @@
         <Path Width="14" Height="14"
               Data="{StaticResource Icons.Magic}"/>
       </ToggleButton>
+
+      <Button Grid.Column="4" Classes="icon_button" Width="32" Click="ToggleAIChat"
+              ToolTip.Tip="{DynamicResource Text.AIChat}" AutomationProperties.Name="{DynamicResource Text.AIChat}">
+        <Path Width="15" Height="15" Data="{StaticResource Icons.AIAssist}"/>
+      </Button>
     </Grid>
   </Grid>
 </UserControl>

@@ -376,6 +376,8 @@ namespace SourceGit.Views
                     Models.ObjectType.Tree => CreateRevisionFileContextMenuByFolder(repo, commit, obj.Path),
                     _ => CreateRevisionFileContextMenu(repo, vm, commit, obj),
                 };
+                if (obj.Type == Models.ObjectType.Blob)
+                    DiffAnalysis.AddRevisionFileMenu(menu, this, repo.FullPath, commit.SHA, obj);
                 menu.Open(grid);
             }
 

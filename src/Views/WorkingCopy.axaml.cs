@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
@@ -45,6 +44,7 @@ namespace SourceGit.Views
             if (DataContext is ViewModels.WorkingCopy { Repository: { } repo, SelectedUnstaged: { Count: > 0 } selection } vm)
             {
                 var menu = CreateContextMenuForUnstagedChanges(repo, vm, selection);
+                DiffAnalysis.AddSelectionMenu(menu, this, repo.FullPath, selection.Changes, change => new(change, true));
                 menu?.Open(sender as Control);
                 e.Handled = true;
             }
@@ -55,6 +55,7 @@ namespace SourceGit.Views
             if (DataContext is ViewModels.WorkingCopy { Repository: { } repo, SelectedStaged: { Count: > 0 } selection } vm)
             {
                 var menu = CreateContextMenuForStagedChanges(repo, vm, selection);
+                DiffAnalysis.AddSelectionMenu(menu, this, repo.FullPath, selection.Changes, change => new(change, false));
                 menu?.Open(sender as Control);
                 e.Handled = true;
             }
@@ -946,17 +947,18 @@ namespace SourceGit.Views
 
             MenuItem ai = null;
             var services = repo.GetPreferredOpenAIServices();
-            if (services.Count > 0)
+            var hasCli = ViewModels.CommitAssistant.AvailableCliProfiles().Length > 0;
+            if (hasCli || services.Count > 0)
             {
                 ai = new MenuItem();
                 ai.Icon = this.CreateMenuIcon("Icons.AIAssist");
                 ai.Header = App.Text("ChangeCM.GenerateCommitMessage");
 
-                if (services.Count == 1)
+                if (hasCli || services.Count == 1)
                 {
                     ai.Click += (_, e) =>
                     {
-                        DoOpenAIAssistant(repo, services[0], changes);
+                        AIAssistant.Open(this, repo, changes, hasCli ? null : services[0]);
                         e.Handled = true;
                     };
                 }
@@ -970,7 +972,7 @@ namespace SourceGit.Views
                         item.Header = service.Name;
                         item.Click += (_, e) =>
                         {
-                            DoOpenAIAssistant(repo, dup, changes);
+                            AIAssistant.Open(this, repo, changes, dup);
                             e.Handled = true;
                         };
 
@@ -1408,17 +1410,6 @@ namespace SourceGit.Views
 
             menu.Items.Add(custom);
             menu.Items.Add(new MenuItem() { Header = "-" });
-        }
-
-        private void DoOpenAIAssistant(ViewModels.Repository repo, AI.Service serivce, List<Models.Change> changes)
-        {
-            var owner = TopLevel.GetTopLevel(this) as Window;
-            if (owner == null)
-                return;
-
-            var assistant = new ViewModels.AIAssistant(repo, serivce, changes);
-            var view = new AIAssistant() { DataContext = assistant };
-            view.Show(owner);
         }
     }
 }

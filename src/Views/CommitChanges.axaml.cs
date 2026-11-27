@@ -23,14 +23,20 @@ namespace SourceGit.Views
             if (sender is not ChangeCollectionView { Selection: { Count: > 0 } selection } view)
                 return;
 
+            ContextMenu menu;
             if (selection.IsSingleFolder)
-                CreateChangeContextMenuByFolder(selection.SingleFolderPath, selection.Changes)?.Open(view);
+                menu = CreateChangeContextMenuByFolder(selection.SingleFolderPath, selection.Changes);
             else if (selection.Changes.Count > 1)
-                CreateMultipleChangesContextMenu(selection.Changes)?.Open(view);
+                menu = CreateMultipleChangesContextMenu(selection.Changes);
             else if (selection.HasFolder)
-                CreateChangeContextMenuByMultipleFolders(selection.Changes[0])?.Open(view);
+                menu = CreateChangeContextMenuByMultipleFolders(selection.Changes[0]);
             else
-                this.FindAncestorOfType<CommitDetail>()?.CreateChangeContextMenu(selection.Changes[0])?.Open(view);
+                menu = this.FindAncestorOfType<CommitDetail>()?.CreateChangeContextMenu(selection.Changes[0]);
+
+            if (DataContext is ViewModels.CommitDetail { Repository: { } repo, Commit: { } commit })
+                DiffAnalysis.AddSelectionMenu(menu, this, repo.FullPath, selection.Changes, change => new(commit, change));
+
+            menu?.Open(view);
         }
 
         private async void OnChangeCollectionViewKeyDown(object sender, KeyEventArgs e)

@@ -1,0 +1,96 @@
+<ScrollViewer xmlns="https://github.com/avaloniaui"
+              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+              xmlns:v="using:SourceGit.Views"
+              xmlns:vm="using:SourceGit.ViewModels"
+              xmlns:m="using:SourceGit.Models"
+              xmlns:avaloniaEdit="using:AvaloniaEdit"
+              x:Class="SourceGit.Views.AnalysisConversation"
+              x:DataType="vm:AnalysisTranscript"
+              HorizontalScrollBarVisibility="Disabled"
+              VerticalScrollBarVisibility="Auto">
+  <ScrollViewer.Resources>
+    <Thickness x:Key="ExpanderHeaderPadding">9,0,0,0</Thickness>
+    <Thickness x:Key="ExpanderChevronMargin">6,0,8,0</Thickness>
+    <x:Double x:Key="ExpanderChevronButtonSize">14</x:Double>
+  </ScrollViewer.Resources>
+
+  <ScrollViewer.Styles>
+    <Style Selector="Expander.trace_row /template/ ToggleButton#ExpanderHeader /template/ Path#ExpandCollapseChevron">
+      <Setter Property="Width" Value="9"/>
+      <Setter Property="Height" Value="5"/>
+      <Setter Property="Stretch" Value="Uniform"/>
+    </Style>
+  </ScrollViewer.Styles>
+  <ItemsControl Margin="12,10" ItemsSource="{Binding Entries}">
+    <ItemsControl.ItemsPanel>
+      <ItemsPanelTemplate>
+        <StackPanel Spacing="5"/>
+      </ItemsPanelTemplate>
+    </ItemsControl.ItemsPanel>
+    <ItemsControl.ItemTemplate>
+      <DataTemplate x:DataType="vm:DiffAnalysisEntry">
+        <Panel>
+          <SelectableTextBlock Text="{Binding Heading}" IsVisible="{Binding IsNotice}"
+                               Foreground="{DynamicResource Brush.FG2}" TextWrapping="Wrap" Margin="2,3"/>
+          <Grid IsVisible="{Binding IsQuestion}" ColumnDefinitions="*,3*">
+            <Border Grid.Column="1" HorizontalAlignment="Right" Margin="4,3,0,3" Padding="10,6"
+                    Background="{DynamicResource Brush.Window}" BorderBrush="{DynamicResource Brush.Border2}"
+                    BorderThickness="1" CornerRadius="8">
+          <StackPanel Spacing="3">
+            <SelectableTextBlock Text="{Binding Heading}" Foreground="{DynamicResource Brush.FG1}" TextWrapping="Wrap"/>
+            <Border IsVisible="{Binding HasSkill}" HorizontalAlignment="Left" CornerRadius="4" Padding="4,1"
+                    Background="{DynamicResource Brush.Contents}" BorderBrush="{DynamicResource Brush.Border2}" BorderThickness="1">
+              <StackPanel Orientation="Horizontal" Spacing="5">
+                <TextBlock Text="{DynamicResource Text.AIChat.Skill}" FontSize="11" Foreground="{DynamicResource Brush.FG2}"/>
+                <TextBlock Text="{Binding Skill}" ToolTip.Tip="{Binding Skill}" FontSize="11" MaxWidth="150" TextTrimming="CharacterEllipsis"/>
+              </StackPanel>
+            </Border>
+            <ItemsControl ItemsSource="{Binding Attachments}" IsVisible="{Binding HasAttachments}">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="m:AIChatAttachment">
+                  <Button Classes="flat" Padding="3,1" HorizontalAlignment="Left" Click="OnAttachmentClicked" ToolTip.Tip="{Binding Description}">
+                    <TextBlock FontSize="11" Text="{Binding Label}" TextTrimming="CharacterEllipsis"/>
+                  </Button>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </StackPanel>
+            </Border>
+          </Grid>
+          <StackPanel IsVisible="{Binding IsAnswer}" Margin="2,6,2,2" Spacing="4">
+            <v:MarkdownView Markdown="{Binding AnswerMarkdown}" HorizontalContentAlignment="Stretch"/>
+            <Button Classes="icon_button" Width="22" Height="22" Padding="0" HorizontalAlignment="Left" Click="OnCopyReply"
+                    ToolTip.Tip="{DynamicResource Text.DiffAnalysis.CopyMarkdown}"
+                    AutomationProperties.Name="{DynamicResource Text.DiffAnalysis.CopyMarkdown}">
+              <Path Width="12" Height="12" Stretch="Uniform" Data="{StaticResource Icons.Copy}"/>
+            </Button>
+          </StackPanel>
+          <Expander Classes="trace_row" MinWidth="0" MinHeight="28"
+                    IsVisible="{Binding IsTrace}" IsExpanded="{Binding IsExpanded, Mode=TwoWay}"
+                    HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Padding="9,5"
+                    BorderBrush="{DynamicResource Brush.Border2}" BorderThickness="1" CornerRadius="4">
+            <Expander.Header>
+              <TextBlock Text="{Binding Heading}" FontSize="12" FontWeight="SemiBold"
+                         TextTrimming="CharacterEllipsis" ToolTip.Tip="{Binding Heading}"/>
+            </Expander.Header>
+            <ContentControl Content="{Binding ExpandedEntry}" HorizontalContentAlignment="Stretch">
+              <ContentControl.ContentTemplate>
+                <DataTemplate x:DataType="vm:DiffAnalysisEntry">
+                  <StackPanel Spacing="8" Margin="0,0,0,4">
+                    <v:MarkdownView Markdown="{Binding Markdown}" IsVisible="{Binding HasMarkdown}" HorizontalContentAlignment="Stretch" Margin="0,4,0,0"/>
+                    <avaloniaEdit:TextEditor Document="{Binding DetailsDocument, Mode=OneWay}" IsVisible="{Binding HasDetails}"
+                                             BorderThickness="1" BorderBrush="{DynamicResource Brush.Border2}"
+                                             Background="{DynamicResource Brush.Contents}"
+                                             FontFamily="{DynamicResource Fonts.Monospace}" FontSize="12"
+                                             IsReadOnly="True" MaxHeight="260"
+                                             HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"/>
+                  </StackPanel>
+                </DataTemplate>
+              </ContentControl.ContentTemplate>
+            </ContentControl>
+          </Expander>
+        </Panel>
+      </DataTemplate>
+    </ItemsControl.ItemTemplate>
+  </ItemsControl>
+</ScrollViewer>

@@ -811,14 +811,15 @@ namespace SourceGit.Views
                     commits.Add(c);
             }
 
-            if (selected.Count > 1)
+            if (commits.Count > 1)
             {
                 var menu = CreateContextMenuForMultipleCommits(repo, commits);
                 menu.Open(CommitListContainer);
             }
-            else if (selected.Count == 1)
+            else if (commits is [var commit])
             {
-                var menu = CreateContextMenuForSingleCommit(repo, commits[0]);
+                var menu = CreateContextMenuForSingleCommit(repo, commit) ?? new ContextMenu();
+                DiffAnalysis.AddCommitMenu(menu, this, repo.FullPath, commit);
                 menu.Open(CommitListContainer);
             }
 

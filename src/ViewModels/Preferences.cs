@@ -474,6 +474,23 @@ namespace SourceGit.ViewModels
             set;
         } = [];
 
+        public AvaloniaList<AI.ExternalCliProfile> ExternalCliProfiles { get; set; } = [];
+
+        public string CommitMessageRule
+        {
+            get => _commitMessageRule;
+            set => SetProperty(ref _commitMessageRule, value);
+        }
+
+        public const string DefaultCommitMessageRule =
+@"Follow the Conventional Commits specification. Format: <type>(<scope>): <subject>
+Allowed types: feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert
+Write the commit message in English. Output exactly one line and nothing else
+Never write a body, a footer or bullet points. Do not end the subject with a period
+Output only the commit message itself. Do not output explanations, code fences or Markdown markers";
+
+        private string _commitMessageRule = DefaultCommitMessageRule;
+
         public double LastCheckUpdateTime
         {
             get => _lastCheckUpdateTime;
@@ -640,11 +657,39 @@ namespace SourceGit.ViewModels
             try
             {
                 using var stream = File.OpenRead(path);
-                return JsonSerializer.Deserialize(stream, JsonCodeGen.Default.Preferences);
+                var preferences = JsonSerializer.Deserialize(stream, JsonCodeGen.Default.Preferences) ?? new Preferences();
+                preferences.MigrateExternalCliProfiles();
+                return preferences;
             }
             catch
             {
                 return new Preferences();
+            }
+        }
+
+        private void MigrateExternalCliProfiles()
+        {
+            OpenAIServices ??= [];
+            ExternalCliProfiles ??= [];
+            for (var i = OpenAIServices.Count - 1; i >= 0; i--)
+            {
+                var service = OpenAIServices[i];
+                if (service?.IsCliBackend != true)
+                    continue;
+
+                // The old arguments were a shell-style string. Leave the migrated profile disabled
+                // until the user reviews how it should receive input and emit output.
+                ExternalCliProfiles.Insert(0, new AI.ExternalCliProfile()
+                {
+                    Name = service.Name,
+                    Executable = service.ExecutablePath,
+                    AdditionalPrompt = service.AdditionalPrompt,
+                    LegacyArguments = service.ExtraArguments,
+                    CanAnalyze = false,
+                    CanGenerateCommit = false,
+                    ResumeGeneration = service.PersistConversation,
+                });
+                OpenAIServices.RemoveAt(i);
             }
         }
 

@@ -1,0 +1,209 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:v="using:SourceGit.Views"
+             xmlns:vm="using:SourceGit.ViewModels"
+             xmlns:m="using:SourceGit.Models"
+             xmlns:ai="using:SourceGit.AI"
+             x:Class="SourceGit.Views.AIChatPanel"
+             x:DataType="vm:AIChat">
+  <Grid RowDefinitions="Auto,Auto,*,Auto" Background="{DynamicResource Brush.Window}">
+    <Border Padding="10,5" BorderThickness="0,0,0,1" BorderBrush="{DynamicResource Brush.Border0}">
+      <Grid ColumnDefinitions="*,Auto">
+        <StackPanel Orientation="Horizontal" Spacing="7" VerticalAlignment="Center">
+          <Path Width="14" Height="14" Stretch="Uniform" Fill="{DynamicResource Brush.Accent}" Data="{StaticResource Icons.AIAssist}"/>
+          <TextBlock Classes="bold" Text="{DynamicResource Text.AIChat}"/>
+        </StackPanel>
+        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="4">
+          <Button x:Name="HistoryButton" Classes="flat" Height="22" Padding="6,0" Content="{DynamicResource Text.AIChat.History}" IsEnabled="{Binding !IsBusy}">
+            <Button.Flyout>
+              <Flyout Placement="Bottom" ShowMode="Standard">
+                <StackPanel Width="262" Spacing="6">
+                  <TextBox Text="{Binding Filter, Mode=TwoWay}" Watermark="{DynamicResource Text.AIChat.Search}"/>
+                  <ListBox ItemsSource="{Binding History}" MaxHeight="250" SelectionChanged="OnHistorySelected">
+                    <ListBox.ItemTemplate>
+                      <DataTemplate x:DataType="m:AIChatThread">
+                        <StackPanel Spacing="2" Margin="3,4">
+                          <TextBlock Text="{Binding DisplayTitle}" TextTrimming="CharacterEllipsis" ToolTip.Tip="{Binding DisplayTitle}"/>
+                          <TextBlock Text="{Binding DisplayDate}" Foreground="{DynamicResource Brush.FG2}" FontSize="11"/>
+                        </StackPanel>
+                      </DataTemplate>
+                    </ListBox.ItemTemplate>
+                  </ListBox>
+                </StackPanel>
+              </Flyout>
+            </Button.Flyout>
+          </Button>
+          <Button Classes="flat" Width="22" Height="22" Padding="0" Click="OnNewChat"
+                  ToolTip.Tip="{DynamicResource Text.AIChat.New}" AutomationProperties.Name="{DynamicResource Text.AIChat.New}" IsEnabled="{Binding !IsBusy}">
+            <Path Width="10" Height="10" Stretch="Uniform" Data="{StaticResource Icons.Plus}"/>
+          </Button>
+          <Button Classes="flat" Width="22" Height="22" Padding="0" Click="OnHide"
+                  ToolTip.Tip="{DynamicResource Text.AIChat.Hide}" AutomationProperties.Name="{DynamicResource Text.AIChat.Hide}">
+            <Path Width="10" Height="10" Stretch="Uniform" Data="{StaticResource Icons.Close}"/>
+          </Button>
+        </StackPanel>
+      </Grid>
+    </Border>
+
+    <Grid Grid.Row="1" ColumnDefinitions="*,Auto" Margin="10,6" ColumnSpacing="8">
+      <TextBlock Classes="bold" VerticalAlignment="Center" Text="{Binding Title}" TextTrimming="CharacterEllipsis" ToolTip.Tip="{Binding Title}"/>
+      <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="4">
+        <Panel>
+          <ComboBox ItemsSource="{Binding Profiles}" SelectedItem="{Binding SelectedProfile, Mode=TwoWay}" SelectionChanged="OnSkillProfileChanged"
+                    IsVisible="{Binding HasProfiles}" IsEnabled="{Binding CanSelectProfile}"
+                    MinWidth="95" MaxWidth="150" AutomationProperties.Name="CLI">
+            <ComboBox.ItemTemplate>
+              <DataTemplate x:DataType="ai:ExternalCliProfile">
+                <TextBlock Text="{Binding Name}" TextTrimming="CharacterEllipsis" ToolTip.Tip="{Binding Name}"/>
+              </DataTemplate>
+            </ComboBox.ItemTemplate>
+          </ComboBox>
+          <Button Classes="flat" IsVisible="{Binding !HasProfiles}" IsEnabled="{Binding !IsBusy}"
+                  Content="{DynamicResource Text.ExternalCLI.Configure}" Click="OnConfigure"/>
+        </Panel>
+        <Button Classes="icon_button" Padding="3" Click="OnConfigure" IsVisible="{Binding HasProfiles}" IsEnabled="{Binding !IsBusy}"
+                ToolTip.Tip="{DynamicResource Text.ExternalCLI.Configure}" AutomationProperties.Name="{DynamicResource Text.ExternalCLI.Configure}">
+          <Path Width="13" Height="13" Stretch="Uniform" Data="{StaticResource Icons.Settings}"/>
+        </Button>
+      </StackPanel>
+    </Grid>
+
+    <Border Grid.Row="2" Background="{DynamicResource Brush.Contents}" BorderBrush="{DynamicResource Brush.Border0}" BorderThickness="0,1">
+      <Panel>
+        <v:AnalysisConversation x:Name="ChatScroll" ScrollChanged="OnScrollChanged"/>
+        <TextBlock Margin="18" HorizontalAlignment="Center" VerticalAlignment="Center" IsHitTestVisible="False"
+                   TextAlignment="Center" TextWrapping="Wrap" Foreground="{DynamicResource Brush.FG2}"
+                   IsVisible="{Binding !HasEntries}" Text="{DynamicResource Text.AIChat.Empty}"/>
+      </Panel>
+    </Border>
+
+    <StackPanel Grid.Row="3" Margin="10,7,10,8" Spacing="6">
+      <StackPanel Spacing="4" IsVisible="{Binding HasPending}">
+        <TextBlock Text="{Binding PendingLabel}" Foreground="{DynamicResource Brush.FG2}" FontSize="11"/>
+        <ScrollViewer MaxHeight="90" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+          <ItemsControl ItemsSource="{Binding Pending}" IsEnabled="{Binding !IsBusy}">
+            <ItemsControl.ItemsPanel>
+              <ItemsPanelTemplate><WrapPanel Orientation="Horizontal"/></ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+              <DataTemplate x:DataType="m:AIChatAttachment">
+                <Border Background="{DynamicResource Brush.Contents}" BorderBrush="{DynamicResource Brush.Border2}"
+                        BorderThickness="1" CornerRadius="4" Margin="0,0,5,4">
+                  <StackPanel Orientation="Horizontal">
+                    <Button Classes="flat" Padding="5,2" Click="OnPreview" ToolTip.Tip="{Binding Description}">
+                      <StackPanel Orientation="Horizontal" Spacing="6">
+                        <TextBlock Text="{Binding Label}" MaxWidth="165" TextTrimming="CharacterEllipsis" FontSize="12"/>
+                        <TextBlock Text="{Binding SourceLabel}" Foreground="{DynamicResource Brush.FG2}" FontSize="11"/>
+                      </StackPanel>
+                    </Button>
+                    <Button Classes="flat" Width="22" Padding="0" Content="×" Click="OnRemove"
+                            ToolTip.Tip="{DynamicResource Text.AIChat.Remove}" AutomationProperties.Name="{DynamicResource Text.AIChat.Remove}"/>
+                  </StackPanel>
+                </Border>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </ScrollViewer>
+      </StackPanel>
+
+      <Border Padding="6" CornerRadius="4" BorderThickness="1" BorderBrush="{DynamicResource Brush.Border2}"
+              Background="{DynamicResource Brush.Contents}" IsVisible="{Binding HasPreview}">
+        <Grid RowDefinitions="Auto,Auto">
+          <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,4">
+            <TextBlock Text="{Binding Preview.Description}" TextTrimming="CharacterEllipsis" FontSize="11" ToolTip.Tip="{Binding Preview.Description}"/>
+            <Button Grid.Column="1" Classes="flat" Padding="1,0" Content="×" Click="OnClosePreview" ToolTip.Tip="{DynamicResource Text.AIChat.ClosePreview}"/>
+          </Grid>
+          <ScrollViewer Grid.Row="1" MaxHeight="144" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+            <SelectableTextBlock Text="{Binding Preview.Snapshot.Patch}" FontSize="11" FontFamily="{DynamicResource Fonts.Monospace}"/>
+          </ScrollViewer>
+        </Grid>
+      </Border>
+
+      <Grid ColumnDefinitions="*,*" ColumnSpacing="8" IsVisible="{Binding HasChatOptions}" IsEnabled="{Binding !IsBusy}">
+        <StackPanel Spacing="2" IsVisible="{Binding HasModelOptions}">
+          <TextBlock FontSize="11" Foreground="{DynamicResource Brush.FG2}" Text="{DynamicResource Text.AIChat.Model}"/>
+          <ComboBox x:Name="ModelPicker" HorizontalAlignment="Stretch" ItemsSource="{Binding ModelOptions}"
+                    AutomationProperties.Name="{DynamicResource Text.AIChat.Model}" SelectedItem="{Binding SelectedModel, Mode=TwoWay}">
+            <ComboBox.ItemTemplate>
+              <DataTemplate x:DataType="vm:AIChatOption"><TextBlock Text="{Binding Label}" TextTrimming="CharacterEllipsis" ToolTip.Tip="{Binding Label}"/></DataTemplate>
+            </ComboBox.ItemTemplate>
+          </ComboBox>
+        </StackPanel>
+        <StackPanel Grid.Column="1" Spacing="2" IsVisible="{Binding HasEffortOptions}">
+          <TextBlock FontSize="11" Foreground="{DynamicResource Brush.FG2}" Text="{DynamicResource Text.AIChat.Effort}"/>
+          <ComboBox x:Name="EffortPicker" HorizontalAlignment="Stretch" ItemsSource="{Binding EffortOptions}"
+                    AutomationProperties.Name="{DynamicResource Text.AIChat.Effort}" SelectedItem="{Binding SelectedEffort, Mode=TwoWay}">
+            <ComboBox.ItemTemplate>
+              <DataTemplate x:DataType="vm:AIChatOption"><TextBlock Text="{Binding Label}" TextTrimming="CharacterEllipsis" ToolTip.Tip="{Binding Label}"/></DataTemplate>
+            </ComboBox.ItemTemplate>
+          </ComboBox>
+        </StackPanel>
+      </Grid>
+
+      <Border IsVisible="{Binding HasPendingSkill}" HorizontalAlignment="Left" Padding="7,1,2,1"
+              Background="{DynamicResource Brush.Contents}" BorderBrush="{DynamicResource Brush.Border2}" BorderThickness="1" CornerRadius="4">
+        <StackPanel Orientation="Horizontal" Spacing="6">
+          <TextBlock Text="{DynamicResource Text.AIChat.Skill}" Foreground="{DynamicResource Brush.FG2}" FontSize="11" VerticalAlignment="Center"/>
+          <TextBlock Text="{Binding PendingSkill.Label}" ToolTip.Tip="{Binding PendingSkill.Description}" MaxWidth="190"
+                     TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
+          <Button Classes="icon_button" Width="21" Height="21" Padding="0" Click="OnRemoveSkill" IsEnabled="{Binding !IsBusy}"
+                  ToolTip.Tip="{DynamicResource Text.AIChat.RemoveSkill}" AutomationProperties.Name="{DynamicResource Text.AIChat.RemoveSkill}">
+            <Path Width="8" Height="8" Data="{StaticResource Icons.Close}"/>
+          </Button>
+        </StackPanel>
+      </Border>
+
+      <Border x:Name="SkillMenu" IsVisible="False" Background="{DynamicResource Brush.Contents}"
+              BorderBrush="{DynamicResource Brush.Border2}" BorderThickness="1" CornerRadius="4">
+        <StackPanel>
+          <TextBlock x:Name="SkillMenuStatus" Margin="8,6" Foreground="{DynamicResource Brush.FG2}"
+                     TextWrapping="Wrap" MaxHeight="48" ToolTip.Tip="{Binding #SkillMenuStatus.Text}"/>
+          <ListBox x:Name="SkillChoices" MaxHeight="160" Padding="2" AutomationProperties.Name="{DynamicResource Text.AIChat.Skills}">
+            <ListBox.ItemTemplate>
+              <DataTemplate x:DataType="ai:ExternalCliSkill">
+                <Button Classes="icon_button" Focusable="False" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"
+                        Padding="6,3" Click="OnSkillClicked" ToolTip.Tip="{Binding Description}">
+                  <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                    <TextBlock Text="{Binding Label}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                    <TextBlock Grid.Column="1" Text="{Binding Source}" FontSize="11" Foreground="{DynamicResource Brush.FG2}" MaxWidth="100"
+                               TextTrimming="CharacterEllipsis"/>
+                    <TextBlock Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding Description}" FontSize="11"
+                               Foreground="{DynamicResource Brush.FG2}" TextTrimming="CharacterEllipsis"
+                               IsVisible="{Binding Description, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+                  </Grid>
+                </Button>
+              </DataTemplate>
+            </ListBox.ItemTemplate>
+          </ListBox>
+        </StackPanel>
+      </Border>
+
+      <TextBox x:Name="ChatBox" Text="{Binding Draft, Mode=TwoWay}" AcceptsReturn="True" TextWrapping="Wrap"
+               MinHeight="47" MaxHeight="110" VerticalContentAlignment="Top" IsReadOnly="{Binding IsSending}"
+               Watermark="{Binding DraftWatermark}" TextChanged="OnSkillQueryChanged"/>
+      <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6">
+        <TextBlock Text="{Binding Status}" Foreground="{DynamicResource Brush.FG2}" FontSize="11" VerticalAlignment="Center"
+                   TextWrapping="Wrap" MaxHeight="40" ToolTip.Tip="{Binding Status}"/>
+        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="5">
+          <v:LoadingIcon Width="13" Height="13" IsVisible="{Binding IsBusy}"/>
+          <Button Classes="flat" Padding="6,2" Content="{DynamicResource Text.Copy}" IsVisible="{Binding HasEntries}">
+            <Button.Flyout>
+              <MenuFlyout>
+                <MenuItem Header="{DynamicResource Text.DiffAnalysis.CopySelection}" IsEnabled="{Binding #ChatScroll.HasSelection}" Click="OnCopySelection"/>
+                <MenuItem Header="{DynamicResource Text.DiffAnalysis.CopyMarkdown}" Click="OnCopyAnswer"/>
+                <MenuItem Header="{DynamicResource Text.DiffAnalysis.CopyTranscript}" Click="OnCopyConversation"/>
+              </MenuFlyout>
+            </Button.Flyout>
+          </Button>
+          <Panel>
+            <Button Classes="flat primary" MinWidth="62" Padding="8,2" Content="{DynamicResource Text.AIChat.Send}"
+                    IsVisible="{Binding !IsSending}" IsEnabled="{Binding CanSend}" Click="OnSend"
+                    ToolTip.Tip="{DynamicResource Text.AIChat.SendShortcut}"/>
+            <Button Classes="flat" MinWidth="62" Padding="8,2" Content="{DynamicResource Text.DiffAnalysis.Stop}"
+                    IsVisible="{Binding IsSending}" Click="OnStop"/>
+          </Panel>
+        </StackPanel>
+      </Grid>
+    </StackPanel>
+  </Grid>
+</UserControl>

@@ -113,6 +113,11 @@
           </Grid>
         </ListBoxItem>
       </ListBox>
+      <Button Grid.Row="1" Classes="icon_button" Width="40" Height="35" Margin="4,0,4,2"
+              HorizontalAlignment="Center" VerticalAlignment="Bottom" Click="OnToggleAIChat"
+              ToolTip.Tip="{DynamicResource Text.AIChat}" AutomationProperties.Name="{DynamicResource Text.AIChat}">
+        <Path Width="18" Height="18" Data="{StaticResource Icons.AIAssist}"/>
+      </Button>
       
       <Button Grid.Row="2"
               Classes="icon_button"
@@ -267,11 +272,14 @@
           </Grid>
 
           <!-- Main Body -->
-          <Grid Grid.Row="1" Background="{DynamicResource Brush.Window}">
+          <Grid Grid.Row="1" x:Name="RepositoryBody" Background="{DynamicResource Brush.Window}" SizeChanged="OnRepositoryBodySizeChanged">
             <Grid.ColumnDefinitions>
               <ColumnDefinition Width="{Binding #ThisControl.SidebarWidth, Mode=TwoWay}" MinWidth="{Binding #ThisControl.SidebarMinWidth, Mode=OneWay}"/>
               <ColumnDefinition Width="Auto"/>
               <ColumnDefinition Width="*" MinWidth="100"/>
+              <ColumnDefinition Width="Auto"/>
+              <ColumnDefinition Width="{Binding #ThisControl.AIChatColumnWidth, Mode=TwoWay}"
+                                MinWidth="{Binding #ThisControl.AIChatMinWidth}" MaxWidth="{Binding #ThisControl.AIChatMaxWidth}"/>
             </Grid.ColumnDefinitions>
 
             <!-- Sidebar (Branches/Remotes/Tags/Submodules/Worktrees) -->
@@ -878,6 +886,11 @@
                 </Border>
               </Border>
             </Grid>
+            <GridSplitter x:Name="AIChatSplitter" Grid.Column="3" Width="4" MinWidth="4" MaxWidth="4"
+                          ResizeDirection="Columns" ResizeBehavior="PreviousAndNext" HorizontalAlignment="Stretch"
+                          Background="Transparent" BorderThickness="0,0,1,0" BorderBrush="{DynamicResource Brush.Border0}" IsVisible="False"/>
+            <ContentControl x:Name="AIChatDock" Grid.Column="4" HorizontalContentAlignment="Stretch"
+                            VerticalContentAlignment="Stretch" IsVisible="False"/>
           </Grid>
         </Grid>
       </Border>
