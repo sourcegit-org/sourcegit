@@ -141,6 +141,23 @@ namespace SourceGit.ViewModels
             set => _repo.Settings.PreferredOpenAIService = value;
         }
 
+        public List<AI.ExternalCliProfile> AvailableExternalCliProfiles { get; }
+
+        public AI.ExternalCliProfile PreferredExternalCli
+        {
+            get => AvailableExternalCliProfiles.Find(profile => profile.Id == _repo.Settings.PreferredExternalCli) ?? AvailableExternalCliProfiles[0];
+            set => _repo.Settings.PreferredExternalCli = value?.Id ?? Guid.Empty;
+        }
+
+        public string BranchNameTemplate
+        {
+            get => _repo.Settings.BranchNameTemplate;
+            set => _repo.Settings.BranchNameTemplate = value;
+        }
+
+        public Models.PullRequestWorkflow PublishWorkflow => _repo.Settings.PullRequestWorkflow;
+        public List<string> PublishRemoteChoices { get; }
+
         public AvaloniaList<Models.CustomAction> CustomActions
         {
             get => _repo.Settings.CustomActions;
@@ -166,6 +183,11 @@ namespace SourceGit.ViewModels
 
             if (!AvailableOpenAIServices.Contains(PreferredOpenAIService))
                 PreferredOpenAIService = "---";
+
+            AvailableExternalCliProfiles = [new AI.ExternalCliProfile() { Id = Guid.Empty, Name = App.Text("ExternalCLI.FirstProfile") },
+                .. CommitAssistant.AvailableCliProfiles()];
+            _repo.Settings.PullRequestWorkflow ??= new Models.PullRequestWorkflow();
+            PublishRemoteChoices = [string.Empty, .. Remotes];
 
             _cached = new Commands.Config(repo.FullPath).ReadAll();
             if (_cached.TryGetValue("user.name", out var name))

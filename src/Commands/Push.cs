@@ -38,7 +38,7 @@ namespace SourceGit.Commands
             if (force)
                 builder.Append("--force-with-lease ");
 
-            builder.Append(remote.Name).Append(' ').Append(revision.SHA).Append(":refs/heads/").Append(remoteBranch.Name);
+            builder.Append("-- ").Append(remote.Name.Quoted()).Append(' ').Append($"{revision.SHA}:refs/heads/{remoteBranch.Name}".Quoted());
             Args = builder.ToString();
         }
 

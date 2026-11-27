@@ -1,0 +1,88 @@
+<v:ChromelessWindow xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:v="using:SourceGit.Views"
+                    xmlns:vm="using:SourceGit.ViewModels"
+                    xmlns:m="using:SourceGit.Models"
+                    xmlns:ai="using:SourceGit.AI"
+                    x:Class="SourceGit.Views.PublishPullRequest"
+                    x:DataType="vm:PublishPullRequest"
+                    x:Name="ThisControl"
+                    Icon="/App.ico"
+                    Title="{DynamicResource Text.PublishReview}"
+                    Width="750" Height="600" MinWidth="540" MinHeight="450"
+                    WindowStartupLocation="CenterOwner">
+  <Grid RowDefinitions="Auto,*,Auto">
+    <Grid Height="28" IsVisible="{Binding !#ThisControl.UseSystemWindowFrame}">
+      <Border Background="{DynamicResource Brush.TitleBar}" PointerPressed="BeginMoveWindow"/>
+      <TextBlock Classes="bold" HorizontalAlignment="Center" VerticalAlignment="Center" IsHitTestVisible="False"
+                 Text="{DynamicResource Text.PublishReview}"/>
+      <v:CaptionButtons HorizontalAlignment="Right" IsCloseButtonOnly="True"
+                        IsVisible="{OnPlatform True, macOS=False}"/>
+    </Grid>
+
+    <Grid Grid.Row="1" Margin="12" RowDefinitions="Auto,Auto,Auto,*" IsEnabled="{Binding CanEdit}">
+      <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto,Auto">
+        <TextBlock Classes="bold" Text="{DynamicResource Text.PublishReview.Source}"/>
+        <TextBlock Grid.Column="1" Margin="12,0,0,0" Classes="bold" Text="{DynamicResource Text.PublishReview.Target}"/>
+        <ComboBox Grid.Row="1" Margin="0,6,0,0" HorizontalAlignment="Stretch"
+                  ItemsSource="{Binding Remotes}" SelectedItem="{Binding PushRemote, Mode=TwoWay}">
+          <ComboBox.ItemTemplate>
+            <DataTemplate x:DataType="m:Remote"><TextBlock Text="{Binding Name}"/></DataTemplate>
+          </ComboBox.ItemTemplate>
+        </ComboBox>
+        <ComboBox Grid.Row="1" Grid.Column="1" Margin="12,6,0,0" HorizontalAlignment="Stretch"
+                  ItemsSource="{Binding Remotes}" SelectedItem="{Binding TargetRemote, Mode=TwoWay}">
+          <ComboBox.ItemTemplate>
+            <DataTemplate x:DataType="m:Remote"><TextBlock Text="{Binding Name}"/></DataTemplate>
+          </ComboBox.ItemTemplate>
+        </ComboBox>
+        <TextBlock Grid.Row="2" Margin="0,4,0,0" Text="{Binding SourceProject}" TextTrimming="CharacterEllipsis"
+                   ToolTip.Tip="{Binding SourceProject}" Foreground="{DynamicResource Brush.FG2}"/>
+        <TextBlock Grid.Row="2" Grid.Column="1" Margin="12,4,0,0" Text="{Binding TargetProject}"
+                   TextTrimming="CharacterEllipsis" ToolTip.Tip="{Binding TargetProject}" Foreground="{DynamicResource Brush.FG2}"/>
+        <TextBox Grid.Row="3" Margin="0,6,0,0" Text="{Binding SourceBranch, Mode=OneWay}" IsReadOnly="True"/>
+        <ComboBox Grid.Row="3" Grid.Column="1" Margin="12,6,0,0" HorizontalAlignment="Stretch"
+                  PlaceholderText="{DynamicResource Text.PublishReview.SelectTarget}"
+                  ItemsSource="{Binding Targets}" SelectedItem="{Binding TargetBranch, Mode=TwoWay}"/>
+      </Grid>
+
+      <Grid Grid.Row="1" Margin="0,12,0,0" ColumnDefinitions="*,Auto" IsVisible="{Binding HasDraftProfiles}">
+        <ComboBox HorizontalAlignment="Stretch" ItemsSource="{Binding DraftProfiles}" SelectedItem="{Binding DraftProfile, Mode=TwoWay}">
+          <ComboBox.ItemTemplate>
+            <DataTemplate x:DataType="ai:ExternalCliProfile"><TextBlock Text="{Binding Name}"/></DataTemplate>
+          </ComboBox.ItemTemplate>
+        </ComboBox>
+        <Button Grid.Column="1" Margin="8,0,0,0" Classes="flat" Click="OnGenerate"
+                Content="{DynamicResource Text.PublishReview.GenerateDraft}" IsEnabled="{Binding CanGenerateDraft}"/>
+      </Grid>
+
+      <TextBox Grid.Row="2" Margin="0,12,0,0" Text="{Binding Title, Mode=TwoWay}"
+               Watermark="{DynamicResource Text.PublishReview.Title}"/>
+      <TextBox Grid.Row="3" Margin="0,8,0,0" Text="{Binding Description, Mode=TwoWay}"
+               AcceptsReturn="True" TextWrapping="Wrap" VerticalContentAlignment="Top"
+               Watermark="{DynamicResource Text.PublishReview.Description}"/>
+    </Grid>
+
+    <Grid Grid.Row="2" RowDefinitions="Auto,Auto" Margin="12,0,12,12">
+      <StackPanel Spacing="4">
+        <SelectableTextBlock Text="{Binding Status}" TextWrapping="Wrap" MaxHeight="75"
+                             ToolTip.Tip="{Binding Status}"/>
+        <HyperlinkButton IsVisible="{Binding HasPublishedUrl}" NavigateUri="{Binding PublishedUrl}"
+                         Content="{DynamicResource Text.PublishReview.Open}"/>
+      </StackPanel>
+      <Grid Grid.Row="1" ColumnDefinitions="*,Auto" Margin="0,8,0,0">
+        <TextBlock VerticalAlignment="Center" Text="{Binding PublisherName}" TextTrimming="CharacterEllipsis"/>
+        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+          <v:LoadingIcon Width="14" Height="14" IsVisible="{Binding IsBusy}"/>
+          <Button Classes="flat" Content="{DynamicResource Text.DiffAnalysis.Stop}" IsVisible="{Binding CanStop}" Click="OnStop"/>
+          <Button Classes="flat" Content="{DynamicResource Text.PublishReview.Refresh}"
+                  IsEnabled="{Binding CanEdit}" Click="OnRefresh"/>
+          <Button Classes="flat" Content="{DynamicResource Text.PublishReview.ReviewCredentials}"
+                  IsVisible="{Binding CanConfigureCredentials}" Click="OnConfigureCredentials"/>
+          <Button Classes="flat primary" Content="{DynamicResource Text.PublishReview.Confirm}"
+                  IsEnabled="{Binding CanPublish}" Click="OnPublish"/>
+        </StackPanel>
+      </Grid>
+    </Grid>
+  </Grid>
+</v:ChromelessWindow>

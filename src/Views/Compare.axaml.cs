@@ -239,6 +239,7 @@ namespace SourceGit.Views
                     menu.Items.Add(copyFullPath);
                 }
 
+                DiffAnalysis.AddSelectionMenu(menu, this, vm.RepositoryPath, selection.Changes, vm.CreateDiffOption);
                 menu.Open(sender as Control);
             }
 
@@ -295,6 +296,9 @@ namespace SourceGit.Views
                 };
 
                 menu.Items.Add(copy);
+                if (commits is [var commit])
+                    DiffAnalysis.AddCommitMenu(menu, this, vm.RepositoryPath, commit);
+
                 menu.Open(listBox);
                 e.Handled = true;
             }

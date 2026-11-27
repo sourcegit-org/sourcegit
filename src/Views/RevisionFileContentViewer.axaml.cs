@@ -142,6 +142,16 @@ namespace SourceGit.Views
 
             var menu = new ContextMenu();
             menu.Items.Add(copy);
+            if (DataContext is Models.RevisionTextFile source && this.FindAncestorOfType<RevisionFiles>()?.DataContext is
+                ViewModels.CommitDetail { Repository: { } repo, Commit: { } commit })
+            {
+                var start = Document.GetLineByOffset(SelectionStart).LineNumber;
+                var end = Document.GetLineByOffset(SelectionStart + SelectionLength - 1).LineNumber;
+                var scope = start == end ? $"L{start}" : $"L{start}–{end}";
+                var analysis = DiffAnalysis.CreateRevisionTextMenu(this, repo.FullPath, commit.SHA, source.FileName, selected, scope);
+                if (analysis != null)
+                    menu.Items.Add(analysis);
+            }
             menu.Open(TextArea.TextView);
 
             e.Handled = true;

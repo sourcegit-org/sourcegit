@@ -14,6 +14,8 @@ namespace SourceGit.ViewModels
 {
     public class Repository : ObservableObject, Models.IRepository
     {
+        internal AIChat Chat => _chat ??= AIChat.ForWorktree(FullPath, Settings.PreferredExternalCli);
+
         public bool IsBare
         {
             get;
@@ -564,6 +566,8 @@ namespace SourceGit.ViewModels
 
         public void Close()
         {
+            _chat?.FlushDraft();
+            _chat?.Stop();
             var commitMessage = _workingCopy.CommitMessage;
             if (!string.IsNullOrEmpty(commitMessage) && _workingCopy.InProgressContext != null)
             {
@@ -2103,6 +2107,7 @@ namespace SourceGit.ViewModels
         private List<Models.Remote> _remotes = [];
         private List<Models.Branch> _branches = [];
         private Models.Branch _currentBranch = null;
+        private AIChat _chat;
         private List<BranchTreeNode> _localBranchTrees = [];
         private List<BranchTreeNode> _pinnedBranchTrees = [];
         private bool _hasPinnedBranches = false;

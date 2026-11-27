@@ -525,7 +525,7 @@
           <TextBlock Classes="tab_header" Text="{DynamicResource Text.Configure.OpenAI}"/>
         </TabItem.Header>
 
-        <Grid Margin="16,4,16,8" RowDefinitions="32,Auto" ColumnDefinitions="Auto,*">
+        <Grid Margin="16,4,16,8" RowDefinitions="32,Auto,Auto,Auto" ColumnDefinitions="Auto,*">
           <TextBlock Grid.Row="0" Grid.Column="0"
                      HorizontalAlignment="Right" VerticalAlignment="Center"
                      Margin="0,0,8,0"
@@ -550,7 +550,43 @@
                      Text="{DynamicResource Text.Configure.OpenAI.Preferred.Tip}"
                      TextWrapping="Wrap"
                      Foreground="{DynamicResource Brush.FG2}"/>
+          <TextBlock Grid.Row="2" Grid.Column="0" Margin="0,12,8,0" VerticalAlignment="Center"
+                     Text="{DynamicResource Text.ExternalCLI.Preferred}"/>
+          <ComboBox Grid.Row="2" Grid.Column="1" Margin="0,12,0,0" HorizontalAlignment="Stretch"
+                    ItemsSource="{Binding AvailableExternalCliProfiles}"
+                    SelectedItem="{Binding PreferredExternalCli, Mode=TwoWay}">
+            <ComboBox.ItemTemplate>
+              <DataTemplate>
+                <TextBlock Text="{Binding Name}"/>
+              </DataTemplate>
+            </ComboBox.ItemTemplate>
+          </ComboBox>
+          <TextBlock Grid.Row="3" Grid.Column="0" Margin="0,12,8,0" VerticalAlignment="Center"
+                     Text="{DynamicResource Text.BranchWorkflow.Template}"/>
+          <TextBox Grid.Row="3" Grid.Column="1" Margin="0,12,0,0" Text="{Binding BranchNameTemplate, Mode=TwoWay}"/>
         </Grid>
+      </TabItem>
+      <TabItem>
+        <TabItem.Header>
+          <TextBlock Classes="tab_header" Text="{DynamicResource Text.PublishReview}"/>
+        </TabItem.Header>
+        <StackPanel Margin="16,8" Spacing="8">
+          <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto">
+            <TextBlock Text="{DynamicResource Text.PublishReview.PushRemote}"/>
+            <TextBlock Grid.Column="1" Margin="10,0,0,0" Text="{DynamicResource Text.PublishReview.TargetRemote}"/>
+            <ComboBox Grid.Row="1" Margin="0,4,0,0" HorizontalAlignment="Stretch"
+                      ItemsSource="{Binding PublishRemoteChoices}" SelectedItem="{Binding PublishWorkflow.PushRemote, Mode=TwoWay}"/>
+            <ComboBox Grid.Row="1" Grid.Column="1" Margin="10,4,0,0" HorizontalAlignment="Stretch"
+                      ItemsSource="{Binding PublishRemoteChoices}" SelectedItem="{Binding PublishWorkflow.TargetRemote, Mode=TwoWay}"/>
+          </Grid>
+          <TextBlock Text="{DynamicResource Text.PublishReview.DefaultTarget}"/>
+          <TextBox Text="{Binding PublishWorkflow.TargetBranch, Mode=TwoWay}"/>
+          <TextBlock Text="{DynamicResource Text.PublishReview.Template}"/>
+          <TextBox Text="{Binding PublishWorkflow.DescriptionTemplate, Mode=TwoWay}" MinHeight="100"
+                   AcceptsReturn="True" TextWrapping="Wrap" VerticalContentAlignment="Top"/>
+          <TextBlock Text="{DynamicResource Text.PublishReview.RepositoryHelp}" TextWrapping="Wrap"
+                     Foreground="{DynamicResource Brush.FG2}"/>
+        </StackPanel>
       </TabItem>
     </TabControl>
   </Grid>

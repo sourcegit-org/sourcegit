@@ -17,6 +17,8 @@
   <x:String x:Key="Text.AddWorktree.Name" xml:space="preserve">分支名 ：</x:String>
   <x:String x:Key="Text.AddWorktree.Name.Placeholder" xml:space="preserve">选填。默认使用目标文件夹名称。</x:String>
   <x:String x:Key="Text.AIAssistant" xml:space="preserve">AI助手</x:String>
+  <x:String x:Key="Text.AIAssistant.NoApiServices" xml:space="preserve">请在「偏好设置 → AI」添加 API 服务。</x:String>
+  <x:String x:Key="Text.AIAssistant.SelectService" xml:space="preserve">选择 AI 服务</x:String>
   <x:String x:Key="Text.AIAssistant.Model" xml:space="preserve">模型</x:String>
   <x:String x:Key="Text.AIAssistant.Regen" xml:space="preserve">重新生成</x:String>
   <x:String x:Key="Text.AIAssistant.Tip" xml:space="preserve">使用AI助手生成提交信息</x:String>
@@ -102,6 +104,16 @@
   <x:String x:Key="Text.BranchTree.Tracking" xml:space="preserve">上游分支</x:String>
   <x:String x:Key="Text.BranchTree.URL" xml:space="preserve">远程地址</x:String>
   <x:String x:Key="Text.BranchTree.Worktree" xml:space="preserve">工作树</x:String>
+  <x:String x:Key="Text.BranchWorkflow.CommitFailed" xml:space="preserve">分支 {0} 已创建。请查看 Git 日志，再继续提交。</x:String>
+  <x:String x:Key="Text.BranchWorkflow.Confirm" xml:space="preserve">创建分支 {0} 并提交 {1} 个暂存文件？&#10;&#10;{2}</x:String>
+  <x:String x:Key="Text.BranchWorkflow.ConfirmContinue" xml:space="preserve">在 {0} 提交 {1} 个暂存文件？&#10;&#10;{2}</x:String>
+  <x:String x:Key="Text.BranchWorkflow.Continue" xml:space="preserve">继续提交</x:String>
+  <x:String x:Key="Text.BranchWorkflow.Create" xml:space="preserve">创建分支并提交</x:String>
+  <x:String x:Key="Text.BranchWorkflow.CreateFailed" xml:space="preserve">无法创建分支。请检查分支名和 Git 日志。</x:String>
+  <x:String x:Key="Text.BranchWorkflow.Name" xml:space="preserve">分支名</x:String>
+  <x:String x:Key="Text.BranchWorkflow.NotReady" xml:space="preserve">请先完成当前 Git 操作并检查分支名。</x:String>
+  <x:String x:Key="Text.BranchWorkflow.Stale" xml:space="preserve">分支或暂存变更已改变，请重新生成并确认当前内容。</x:String>
+  <x:String x:Key="Text.BranchWorkflow.Template" xml:space="preserve">分支命名模板</x:String>
   <x:String x:Key="Text.Cancel" xml:space="preserve">取    消</x:String>
   <x:String x:Key="Text.ChangeCM.CheckoutFirstParentRevision" xml:space="preserve">重置文件到上一版本</x:String>
   <x:String x:Key="Text.ChangeCM.CheckoutThisRevision" xml:space="preserve">重置文件到该版本</x:String>
@@ -378,6 +390,62 @@
   <x:String x:Key="Text.DeleteTag" xml:space="preserve">删除标签确认</x:String>
   <x:String x:Key="Text.DeleteTag.Tag" xml:space="preserve">标签名 ：</x:String>
   <x:String x:Key="Text.DeleteTag.WithRemote" xml:space="preserve">同时删除远程仓库中的此标签</x:String>
+  <x:String x:Key="Text.AIChat" xml:space="preserve">AI 对话</x:String>
+  <x:String x:Key="Text.AIChat.Added" xml:space="preserve">已添加 {0} 项上下文。</x:String>
+  <x:String x:Key="Text.AIChat.AlreadyAdded" xml:space="preserve">已在待发送上下文中。</x:String>
+  <x:String x:Key="Text.AIChat.Attach" xml:space="preserve">添加到 AI 对话</x:String>
+  <x:String x:Key="Text.AIChat.AttachmentLimit" xml:space="preserve">待发送上下文已达到长度上限。</x:String>
+  <x:String x:Key="Text.AIChat.Busy" xml:space="preserve">请等待当前请求完成，或先停止它。</x:String>
+  <x:String x:Key="Text.AIChat.CaptureFailed" xml:space="preserve">无法读取选中的变更。{0}</x:String>
+  <x:String x:Key="Text.AIChat.Capturing" xml:space="preserve">正在记录选中的变更…</x:String>
+  <x:String x:Key="Text.AIChat.ClosePreview" xml:space="preserve">关闭快照预览</x:String>
+  <x:String x:Key="Text.AIChat.DefaultQuestion" xml:space="preserve">请分析这些变更的影响。</x:String>
+  <x:String x:Key="Text.AIChat.Draft" xml:space="preserve">问这段变更，或输入接下来要看的问题…</x:String>
+  <x:String x:Key="Text.AIChat.DraftKept" xml:space="preserve">已保留草稿和上下文。</x:String>
+  <x:String x:Key="Text.AIChat.Effort" xml:space="preserve">推理等级</x:String>
+  <x:String x:Key="Text.AIChat.Empty" xml:space="preserve">右键变更或提交，选择「AI → 添加到 AI 对话」。</x:String>
+  <x:String x:Key="Text.AIChat.Hide" xml:space="preserve">收起 AI 对话</x:String>
+  <x:String x:Key="Text.AIChat.History" xml:space="preserve">历史</x:String>
+  <x:String x:Key="Text.AIChat.LoadFailed" xml:space="preserve">部分本地对话无法加载。</x:String>
+  <x:String x:Key="Text.AIChat.Model" xml:space="preserve">模型</x:String>
+  <x:String x:Key="Text.AIChat.New" xml:space="preserve">新对话</x:String>
+  <x:String x:Key="Text.AIChat.Pending" xml:space="preserve">待发送上下文 · {0} 项</x:String>
+  <x:String x:Key="Text.AIChat.ProviderDefault" xml:space="preserve">CLI 默认</x:String>
+  <x:String x:Key="Text.AIChat.Remove" xml:space="preserve">移除上下文</x:String>
+  <x:String x:Key="Text.AIChat.Running" xml:space="preserve">正在分析变更…</x:String>
+  <x:String x:Key="Text.AIChat.SaveFailed" xml:space="preserve">无法将本次对话保存到本机。</x:String>
+  <x:String x:Key="Text.AIChat.Search" xml:space="preserve">搜索此工作树的对话</x:String>
+  <x:String x:Key="Text.AIChat.Send" xml:space="preserve">发送</x:String>
+  <x:String x:Key="Text.AIChat.SendShortcut" xml:space="preserve">Enter 发送 · Shift+Enter 换行</x:String>
+  <x:String x:Key="Text.AIChat.Source.Commit" xml:space="preserve">提交</x:String>
+  <x:String x:Key="Text.AIChat.Source.Revision" xml:space="preserve">版本对比</x:String>
+  <x:String x:Key="Text.AIChat.Source.Staged" xml:space="preserve">已暂存</x:String>
+  <x:String x:Key="Text.AIChat.Source.Unstaged" xml:space="preserve">未暂存</x:String>
+  <x:String x:Key="Text.DiffAnalysis" xml:space="preserve">分析</x:String>
+  <x:String x:Key="Text.DiffAnalysis.Ask" xml:space="preserve">追问</x:String>
+  <x:String x:Key="Text.DiffAnalysis.CopySelection" xml:space="preserve">复制所选内容</x:String>
+  <x:String x:Key="Text.DiffAnalysis.CopyMarkdown" xml:space="preserve">复制回答 Markdown</x:String>
+  <x:String x:Key="Text.DiffAnalysis.CopyTranscript" xml:space="preserve">复制完整记录</x:String>
+  <x:String x:Key="Text.DiffAnalysis.Error" xml:space="preserve">分析失败：{0}</x:String>
+  <x:String x:Key="Text.DiffAnalysis.FileCount" xml:space="preserve">已选 {0} 个文件</x:String>
+  <x:String x:Key="Text.DiffAnalysis.NoChanges" xml:space="preserve">所选范围内没有变更。</x:String>
+  <x:String x:Key="Text.DiffAnalysis.NoProfiles" xml:space="preserve">请先添加可用于分析的 CLI 配置。</x:String>
+  <x:String x:Key="Text.DiffAnalysis.NonText" xml:space="preserve">部分变更只有文件元数据，分析范围为可读取的文本内容。</x:String>
+  <x:String x:Key="Text.DiffAnalysis.Question" xml:space="preserve">追问：{0}</x:String>
+  <x:String x:Key="Text.DiffAnalysis.QuestionPlaceholder" xml:space="preserve">继续询问这个变更…</x:String>
+  <x:String x:Key="Text.DiffAnalysis.Reading" xml:space="preserve">正在读取变更…</x:String>
+  <x:String x:Key="Text.DiffAnalysis.Ready" xml:space="preserve">选择 CLI，然后点击「开始分析」。</x:String>
+  <x:String x:Key="Text.DiffAnalysis.Restarted" xml:space="preserve">已为当前变更开启新的会话。</x:String>
+  <x:String x:Key="Text.DiffAnalysis.Retry" xml:space="preserve">重试</x:String>
+  <x:String x:Key="Text.DiffAnalysis.Start" xml:space="preserve">开始分析</x:String>
+  <x:String x:Key="Text.DiffAnalysis.Stop" xml:space="preserve">停止</x:String>
+  <x:String x:Key="Text.DiffAnalysis.Stopped" xml:space="preserve">分析已停止。</x:String>
+  <x:String x:Key="Text.DiffAnalysis.Thinking" xml:space="preserve">思考</x:String>
+  <x:String x:Key="Text.DiffAnalysis.ToolCall" xml:space="preserve">工具调用</x:String>
+  <x:String x:Key="Text.DiffAnalysis.ToolResult" xml:space="preserve">工具返回</x:String>
+  <x:String x:Key="Text.DiffAnalysis.TraceError" xml:space="preserve">CLI 错误</x:String>
+  <x:String x:Key="Text.DiffAnalysis.TraceStarted" xml:space="preserve">开始分析。</x:String>
+  <x:String x:Key="Text.DiffAnalysis.Truncated" xml:space="preserve">变更片段已截断。</x:String>
   <x:String x:Key="Text.Diff.Binary" xml:space="preserve">二进制文件</x:String>
   <x:String x:Key="Text.Diff.Binary.ViewContentOfNew" xml:space="preserve">查看新内容</x:String>
   <x:String x:Key="Text.Diff.EmptyFile" xml:space="preserve">空文件</x:String>
@@ -436,6 +504,41 @@
   <x:String x:Key="Text.EditRepositoryNode.TitleForRepository" xml:space="preserve">编辑仓库</x:String>
   <x:String x:Key="Text.ExecuteCustomAction.Target" xml:space="preserve">目标:</x:String>
   <x:String x:Key="Text.ExecuteCustomAction.Repository" xml:space="preserve">本仓库</x:String>
+  <x:String x:Key="Text.ExternalCLI.Add" xml:space="preserve">添加配置</x:String>
+  <x:String x:Key="Text.ExternalCLI.Arguments" xml:space="preserve">参数（每行一个）</x:String>
+  <x:String x:Key="Text.ExternalCLI.ChatOptions" xml:space="preserve">AI 对话模型和推理等级</x:String>
+  <x:String x:Key="Text.ExternalCLI.ChatOptionsHelp" xml:space="preserve">每行填写一个可选值或参数。在对应参数里用 {model} 和 {effort} 标记要传入的值。</x:String>
+  <x:String x:Key="Text.ExternalCLI.ChatModels" xml:space="preserve">可选模型</x:String>
+  <x:String x:Key="Text.ExternalCLI.ChatModelArguments" xml:space="preserve">模型参数</x:String>
+  <x:String x:Key="Text.ExternalCLI.ChatEfforts" xml:space="preserve">可选推理等级</x:String>
+  <x:String x:Key="Text.ExternalCLI.ChatEffortArguments" xml:space="preserve">推理等级参数</x:String>
+  <x:String x:Key="Text.ExternalCLI.Commit" xml:space="preserve">生成提交信息</x:String>
+  <x:String x:Key="Text.ExternalCLI.Configure" xml:space="preserve">外部 CLI 配置</x:String>
+  <x:String x:Key="Text.ExternalCLI.DiffError" xml:space="preserve">无法读取变更。{0}</x:String>
+  <x:String x:Key="Text.ExternalCLI.EmptyOutput" xml:space="preserve">命令没有返回答案。</x:String>
+  <x:String x:Key="Text.ExternalCLI.Executable" xml:space="preserve">可执行文件</x:String>
+  <x:String x:Key="Text.ExternalCLI.ExecutableNotFound" xml:space="preserve">找不到可执行文件「{0}」。请填写完整路径或 PATH 中的命令名。脚本需要配置对应的解释器。</x:String>
+  <x:String x:Key="Text.ExternalCLI.ExitError" xml:space="preserve">命令以退出码 {0} 结束。</x:String>
+  <x:String x:Key="Text.ExternalCLI.FirstProfile" xml:space="preserve">首个可用配置</x:String>
+  <x:String x:Key="Text.ExternalCLI.Generate" xml:space="preserve">生成</x:String>
+  <x:String x:Key="Text.ExternalCLI.Generating" xml:space="preserve">正在用 {0} 生成…</x:String>
+  <x:String x:Key="Text.ExternalCLI.Help" xml:space="preserve">SourceGit 会在当前工作树以你的本机权限运行命令。请为 AI 功能配置非交互式的只读命令。命令可能将变更内容发送给服务提供商。</x:String>
+  <x:String x:Key="Text.ExternalCLI.InvalidArguments" xml:space="preserve">请检查占位符。提示文件模式需要在参数中填写 {promptFile}。会话参数需要 {sessionId} 和 JSONL 输出。</x:String>
+  <x:String x:Key="Text.ExternalCLI.InvalidOutput" xml:space="preserve">命令返回了无效的 SourceGit JSONL 输出。</x:String>
+  <x:String x:Key="Text.ExternalCLI.LegacyArguments" xml:space="preserve">旧参数。请逐项配置仍需使用的参数，再启用此配置的用途。</x:String>
+  <x:String x:Key="Text.ExternalCLI.NewProfile" xml:space="preserve">新 CLI 配置</x:String>
+  <x:String x:Key="Text.ExternalCLI.NoChanges" xml:space="preserve">此范围内没有已暂存的变更。</x:String>
+  <x:String x:Key="Text.ExternalCLI.OutputLimit" xml:space="preserve">命令超过了输出长度上限。</x:String>
+  <x:String x:Key="Text.ExternalCLI.Preferred" xml:space="preserve">首选 CLI 配置</x:String>
+  <x:String x:Key="Text.ExternalCLI.PromptFile" xml:space="preserve">用 {promptFile} 读取提示词文件</x:String>
+  <x:String x:Key="Text.ExternalCLI.ReadingDiff" xml:space="preserve">正在读取暂存变更…</x:String>
+  <x:String x:Key="Text.ExternalCLI.Ready" xml:space="preserve">根据暂存变更生成提交主题。</x:String>
+  <x:String x:Key="Text.ExternalCLI.Remove" xml:space="preserve">移除配置</x:String>
+  <x:String x:Key="Text.ExternalCLI.ResumeArguments" xml:space="preserve">会话续接参数（可选，每行一个，包含 {sessionId}）</x:String>
+  <x:String x:Key="Text.ExternalCLI.ResumeGeneration" xml:space="preserve">延续生成对话</x:String>
+  <x:String x:Key="Text.ExternalCLI.StartError" xml:space="preserve">无法启动命令。{0}</x:String>
+  <x:String x:Key="Text.ExternalCLI.StructuredOutput" xml:space="preserve">读取 SourceGit JSONL 输出</x:String>
+  <x:String x:Key="Text.ExternalCLI.TimeoutError" xml:space="preserve">命令在 {0} 秒后超时。</x:String>
   <x:String x:Key="Text.Fetch" xml:space="preserve">拉取(fetch)</x:String>
   <x:String x:Key="Text.Fetch.AllRemotes" xml:space="preserve">拉取所有的远程仓库</x:String>
   <x:String x:Key="Text.Fetch.Force" xml:space="preserve">强制覆盖本地REFs</x:String>
@@ -684,6 +787,8 @@
   <x:String x:Key="Text.Preferences.AI" xml:space="preserve">AI</x:String>
   <x:String x:Key="Text.Preferences.AI.AdditionalPrompt" xml:space="preserve">附加提示词 (请使用 `-` 列出您的要求)</x:String>
   <x:String x:Key="Text.Preferences.AI.ApiKey" xml:space="preserve">API密钥</x:String>
+  <x:String x:Key="Text.Preferences.AI.CommitMessageRule" xml:space="preserve">提交信息生成规则</x:String>
+  <x:String x:Key="Text.Preferences.AI.CommitMessageRule.Reset" xml:space="preserve">恢复默认规则</x:String>
   <x:String x:Key="Text.Preferences.AI.ExtraHeaders" xml:space="preserve">附加 HTTP 请求头部 (格式：每行一条 Name: Value)</x:String>
   <x:String x:Key="Text.Preferences.AI.Model" xml:space="preserve">模型</x:String>
   <x:String x:Key="Text.Preferences.AI.Model.AutoFetchAvailableModels" xml:space="preserve">自动拉取可用模型列表</x:String>
@@ -758,6 +863,60 @@
   <x:String x:Key="Text.PruneRemote.Target" xml:space="preserve">目标 ：</x:String>
   <x:String x:Key="Text.PruneWorktrees" xml:space="preserve">清理工作树</x:String>
   <x:String x:Key="Text.PruneWorktrees.Tip" xml:space="preserve">清理在`$GIT_COMMON_DIR/worktrees`中的无效工作树信息</x:String>
+  <x:String x:Key="Text.PublishReview" xml:space="preserve">发布 PR/MR</x:String>
+  <x:String x:Key="Text.PublishReview.Accounts" xml:space="preserve">PR/MR 凭据</x:String>
+  <x:String x:Key="Text.PublishReview.AuthFailed" xml:space="preserve">服务器拒绝访问。请检查令牌和仓库权限。</x:String>
+  <x:String x:Key="Text.PublishReview.Checking" xml:space="preserve">正在检查源分支和目标分支…</x:String>
+  <x:String x:Key="Text.PublishReview.Confirm" xml:space="preserve">按需推送并发布</x:String>
+  <x:String x:Key="Text.PublishReview.CreateMenu" xml:space="preserve">创建 PR/MR…</x:String>
+  <x:String x:Key="Text.PublishReview.DefaultTarget" xml:space="preserve">默认目标分支</x:String>
+  <x:String x:Key="Text.PublishReview.Description" xml:space="preserve">描述（Markdown）</x:String>
+  <x:String x:Key="Text.PublishReview.Disabled" xml:space="preserve">停用</x:String>
+  <x:String x:Key="Text.PublishReview.LoadFailed" xml:space="preserve">无法加载 PR/MR 信息：{0}</x:String>
+  <x:String x:Key="Text.PublishReview.PublishFailed" xml:space="preserve">无法发布 PR/MR：{0}</x:String>
+  <x:String x:Key="Text.PublishReview.DraftFailed" xml:space="preserve">无法生成草稿。如果本地缺少目标提交，请先获取目标远端。{0}</x:String>
+  <x:String x:Key="Text.PublishReview.DuplicateInstance" xml:space="preserve">此实例已配置为另一种托管平台。</x:String>
+  <x:String x:Key="Text.PublishReview.Existing" xml:space="preserve">已找到对应的 PR/MR。</x:String>
+  <x:String x:Key="Text.PublishReview.Finding" xml:space="preserve">正在用 {0} 检查是否已有 PR/MR…</x:String>
+  <x:String x:Key="Text.PublishReview.GenerateDraft" xml:space="preserve">生成 PR/MR 草稿</x:String>
+  <x:String x:Key="Text.PublishReview.InvalidCredential" xml:space="preserve">请输入 HTTPS 实例地址和访问令牌。</x:String>
+  <x:String x:Key="Text.PublishReview.InvalidResult" xml:space="preserve">发布命令返回了无效结果。</x:String>
+  <x:String x:Key="Text.PublishReview.Loading" xml:space="preserve">正在读取分支和远端…</x:String>
+  <x:String x:Key="Text.PublishReview.MultipleUrls" xml:space="preserve">请选择只有一个 URL 的远端。{0} 对应多个 URL。</x:String>
+  <x:String x:Key="Text.PublishReview.NewPublisher" xml:space="preserve">新发布命令</x:String>
+  <x:String x:Key="Text.PublishReview.NoCommits" xml:space="preserve">源分支没有可用于草稿的新增提交。</x:String>
+  <x:String x:Key="Text.PublishReview.NoTargets" xml:space="preserve">该远端没有目标分支。</x:String>
+  <x:String x:Key="Text.PublishReview.Open" xml:space="preserve">打开 PR/MR</x:String>
+  <x:String x:Key="Text.PublishReview.Published" xml:space="preserve">PR/MR 已发布。</x:String>
+  <x:String x:Key="Text.PublishReview.PublisherHelp" xml:space="preserve">请配置可信的发布命令。它从标准输入读取发布请求，使用自己的登录状态，并输出 JSON 结果。</x:String>
+  <x:String x:Key="Text.PublishReview.PublisherLabel" xml:space="preserve">发布命令</x:String>
+  <x:String x:Key="Text.PublishReview.Publishers" xml:space="preserve">PR/MR 发布命令</x:String>
+  <x:String x:Key="Text.PublishReview.Publishing" xml:space="preserve">正在用 {0} 发布…</x:String>
+  <x:String x:Key="Text.PublishReview.PushFailed" xml:space="preserve">推送到 {0} 失败。请处理 Git 错误后重试。</x:String>
+  <x:String x:Key="Text.PublishReview.PushRemote" xml:space="preserve">推送远端</x:String>
+  <x:String x:Key="Text.PublishReview.Pushing" xml:space="preserve">正在推送 {0} 到 {1}…</x:String>
+  <x:String x:Key="Text.PublishReview.Ready" xml:space="preserve">发布前请确认分支、标题和描述。</x:String>
+  <x:String x:Key="Text.PublishReview.Refresh" xml:space="preserve">刷新分支</x:String>
+  <x:String x:Key="Text.PublishReview.RemoteReadFailed" xml:space="preserve">无法读取 {0} 的分支。请检查远端和认证。</x:String>
+  <x:String x:Key="Text.PublishReview.RepositoryHelp" xml:space="preserve">设置远端和分支的默认值。SourceGit 自动使用目标实例的令牌。</x:String>
+  <x:String x:Key="Text.PublishReview.RequestFailed" xml:space="preserve">服务端返回 HTTP {0}。</x:String>
+  <x:String x:Key="Text.PublishReview.ReviewCredentials" xml:space="preserve">配置访问令牌</x:String>
+  <x:String x:Key="Text.PublishReview.SameBranch" xml:space="preserve">请选择其他目标。源分支和目标分支指向同一项目分支。</x:String>
+  <x:String x:Key="Text.PublishReview.SameInstance" xml:space="preserve">请选择同一个实例上的推送远端和目标远端。</x:String>
+  <x:String x:Key="Text.PublishReview.SelectTarget" xml:space="preserve">选择目标分支</x:String>
+  <x:String x:Key="Text.PublishReview.Server" xml:space="preserve">实例地址（HTTPS）</x:String>
+  <x:String x:Key="Text.PublishReview.Source" xml:space="preserve">源远端和分支</x:String>
+  <x:String x:Key="Text.PublishReview.Stale" xml:space="preserve">远端地址或分支指向已更改。请刷新预览并重新确认。</x:String>
+  <x:String x:Key="Text.PublishReview.StoreFailed" xml:space="preserve">无法更新系统凭据库中的令牌。</x:String>
+  <x:String x:Key="Text.PublishReview.StoreHelp" xml:space="preserve">令牌存入系统凭据库。SourceGit 根据目标远端自动匹配凭据。</x:String>
+  <x:String x:Key="Text.PublishReview.Target" xml:space="preserve">目标远端和分支</x:String>
+  <x:String x:Key="Text.PublishReview.TargetRemote" xml:space="preserve">目标远端</x:String>
+  <x:String x:Key="Text.PublishReview.Template" xml:space="preserve">描述模板</x:String>
+  <x:String x:Key="Text.PublishReview.Title" xml:space="preserve">标题</x:String>
+  <x:String x:Key="Text.PublishReview.Token" xml:space="preserve">访问令牌</x:String>
+  <x:String x:Key="Text.PublishReview.TokenRequired" xml:space="preserve">请为目标远端对应的实例配置令牌。</x:String>
+  <x:String x:Key="Text.PublishReview.TooManyResults" xml:space="preserve">符合条件的请求过多，无法确认是否已存在。</x:String>
+  <x:String x:Key="Text.PublishReview.Unconfirmed" xml:space="preserve">发布命令无法确认是否创建成功。重试时会先查找已有请求。{0}</x:String>
   <x:String x:Key="Text.Pull" xml:space="preserve">拉回(pull)</x:String>
   <x:String x:Key="Text.Pull.Branch" xml:space="preserve">拉取分支 ：</x:String>
   <x:String x:Key="Text.Pull.Into" xml:space="preserve">本地分支 ：</x:String>

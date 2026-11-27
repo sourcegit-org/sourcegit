@@ -811,14 +811,15 @@ namespace SourceGit.Views
                     commits.Add(c);
             }
 
-            if (selected.Count > 1)
+            if (commits.Count > 1)
             {
                 var menu = CreateContextMenuForMultipleCommits(repo, commits);
                 menu.Open(CommitListContainer);
             }
-            else if (selected.Count == 1)
+            else if (commits is [var commit])
             {
-                var menu = CreateContextMenuForSingleCommit(repo, commits[0]);
+                var menu = CreateContextMenuForSingleCommit(repo, commit) ?? new ContextMenu();
+                DiffAnalysis.AddCommitMenu(menu, this, repo.FullPath, commit);
                 menu.Open(CommitListContainer);
             }
 
@@ -1596,6 +1597,7 @@ namespace SourceGit.Views
                 e.Handled = true;
             };
             submenu.Items.Add(push);
+            PublishPullRequest.AddMenu(this, submenu.Items, repo, current);
 
             var pin = new MenuItem();
             pin.Header = repo.IsBranchPinned(current)
@@ -1742,6 +1744,7 @@ namespace SourceGit.Views
                 e.Handled = true;
             };
             submenu.Items.Add(push);
+            PublishPullRequest.AddMenu(this, submenu.Items, repo, branch);
 
             var pin = new MenuItem();
             pin.Header = repo.IsBranchPinned(branch)

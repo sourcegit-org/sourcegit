@@ -13,6 +13,8 @@
   <x:String x:Key="Text.AddWorktree.Name" xml:space="preserve">Branch Name:</x:String>
   <x:String x:Key="Text.AddWorktree.Name.Placeholder" xml:space="preserve">Optional. Default is the destination folder name.</x:String>
   <x:String x:Key="Text.AIAssistant" xml:space="preserve">AI Assistant</x:String>
+  <x:String x:Key="Text.AIAssistant.NoApiServices" xml:space="preserve">Add an API service in Preferences → AI.</x:String>
+  <x:String x:Key="Text.AIAssistant.SelectService" xml:space="preserve">Select an AI service</x:String>
   <x:String x:Key="Text.AIAssistant.Model" xml:space="preserve">MODEL</x:String>
   <x:String x:Key="Text.AIAssistant.Regen" xml:space="preserve">RE-GENERATE</x:String>
   <x:String x:Key="Text.AIAssistant.Tip" xml:space="preserve">Use AI to generate commit message</x:String>
@@ -98,6 +100,16 @@
   <x:String x:Key="Text.BranchTree.Tracking" xml:space="preserve">TRACKING</x:String>
   <x:String x:Key="Text.BranchTree.URL" xml:space="preserve">URL</x:String>
   <x:String x:Key="Text.BranchTree.Worktree" xml:space="preserve">WORKTREE</x:String>
+  <x:String x:Key="Text.BranchWorkflow.CommitFailed" xml:space="preserve">Branch {0} was created. Review the Git log, then continue the commit.</x:String>
+  <x:String x:Key="Text.BranchWorkflow.Confirm" xml:space="preserve">Create branch {0} and commit the {1} staged file(s)?&#10;&#10;{2}</x:String>
+  <x:String x:Key="Text.BranchWorkflow.ConfirmContinue" xml:space="preserve">Commit the {1} staged file(s) on {0}?&#10;&#10;{2}</x:String>
+  <x:String x:Key="Text.BranchWorkflow.Continue" xml:space="preserve">Continue commit</x:String>
+  <x:String x:Key="Text.BranchWorkflow.Create" xml:space="preserve">Create branch and commit</x:String>
+  <x:String x:Key="Text.BranchWorkflow.CreateFailed" xml:space="preserve">Could not create the branch. Check its name and the Git log.</x:String>
+  <x:String x:Key="Text.BranchWorkflow.Name" xml:space="preserve">Branch name</x:String>
+  <x:String x:Key="Text.BranchWorkflow.NotReady" xml:space="preserve">Finish the current Git operation and check the branch name before committing on a new branch.</x:String>
+  <x:String x:Key="Text.BranchWorkflow.Stale" xml:space="preserve">The branch or staged changes have changed. Generate again to review the current changes.</x:String>
+  <x:String x:Key="Text.BranchWorkflow.Template" xml:space="preserve">Branch name template</x:String>
   <x:String x:Key="Text.Cancel" xml:space="preserve">CANCEL</x:String>
   <x:String x:Key="Text.ChangeCM.CheckoutFirstParentRevision" xml:space="preserve">Reset to Parent Revision</x:String>
   <x:String x:Key="Text.ChangeCM.CheckoutThisRevision" xml:space="preserve">Reset to This Revision</x:String>
@@ -374,6 +386,62 @@
   <x:String x:Key="Text.DeleteTag" xml:space="preserve">Delete Tag</x:String>
   <x:String x:Key="Text.DeleteTag.Tag" xml:space="preserve">Tag:</x:String>
   <x:String x:Key="Text.DeleteTag.WithRemote" xml:space="preserve">Delete from remote repositories</x:String>
+  <x:String x:Key="Text.AIChat" xml:space="preserve">AI Chat</x:String>
+  <x:String x:Key="Text.AIChat.Added" xml:space="preserve">Added {0} context item(s).</x:String>
+  <x:String x:Key="Text.AIChat.AlreadyAdded" xml:space="preserve">Already attached to this draft.</x:String>
+  <x:String x:Key="Text.AIChat.Attach" xml:space="preserve">Add to AI Chat</x:String>
+  <x:String x:Key="Text.AIChat.AttachmentLimit" xml:space="preserve">The draft reached its context limit.</x:String>
+  <x:String x:Key="Text.AIChat.Busy" xml:space="preserve">Wait for the current request or stop it first.</x:String>
+  <x:String x:Key="Text.AIChat.CaptureFailed" xml:space="preserve">Could not read the selected changes. {0}</x:String>
+  <x:String x:Key="Text.AIChat.Capturing" xml:space="preserve">Capturing the selected changes…</x:String>
+  <x:String x:Key="Text.AIChat.ClosePreview" xml:space="preserve">Close snapshot preview</x:String>
+  <x:String x:Key="Text.AIChat.DefaultQuestion" xml:space="preserve">Analyze the impact of these changes.</x:String>
+  <x:String x:Key="Text.AIChat.Draft" xml:space="preserve">Ask about the selected changes…</x:String>
+  <x:String x:Key="Text.AIChat.DraftKept" xml:space="preserve">Draft and context kept.</x:String>
+  <x:String x:Key="Text.AIChat.Effort" xml:space="preserve">Reasoning effort</x:String>
+  <x:String x:Key="Text.AIChat.Empty" xml:space="preserve">Right-click a change or a commit and choose AI → Add to AI Chat.</x:String>
+  <x:String x:Key="Text.AIChat.Hide" xml:space="preserve">Close AI Chat panel</x:String>
+  <x:String x:Key="Text.AIChat.History" xml:space="preserve">History</x:String>
+  <x:String x:Key="Text.AIChat.LoadFailed" xml:space="preserve">Some local conversations could not be loaded.</x:String>
+  <x:String x:Key="Text.AIChat.Model" xml:space="preserve">Model</x:String>
+  <x:String x:Key="Text.AIChat.New" xml:space="preserve">New chat</x:String>
+  <x:String x:Key="Text.AIChat.Pending" xml:space="preserve">Pending context · {0}</x:String>
+  <x:String x:Key="Text.AIChat.ProviderDefault" xml:space="preserve">CLI default</x:String>
+  <x:String x:Key="Text.AIChat.Remove" xml:space="preserve">Remove attachment</x:String>
+  <x:String x:Key="Text.AIChat.Running" xml:space="preserve">Analyzing changes…</x:String>
+  <x:String x:Key="Text.AIChat.SaveFailed" xml:space="preserve">Could not save this conversation locally.</x:String>
+  <x:String x:Key="Text.AIChat.Search" xml:space="preserve">Search this worktree’s conversations</x:String>
+  <x:String x:Key="Text.AIChat.Send" xml:space="preserve">Send</x:String>
+  <x:String x:Key="Text.AIChat.SendShortcut" xml:space="preserve">Enter to send · Shift+Enter for a new line</x:String>
+  <x:String x:Key="Text.AIChat.Source.Commit" xml:space="preserve">Commit</x:String>
+  <x:String x:Key="Text.AIChat.Source.Revision" xml:space="preserve">Revision diff</x:String>
+  <x:String x:Key="Text.AIChat.Source.Staged" xml:space="preserve">Staged</x:String>
+  <x:String x:Key="Text.AIChat.Source.Unstaged" xml:space="preserve">Unstaged</x:String>
+  <x:String x:Key="Text.DiffAnalysis" xml:space="preserve">Analysis</x:String>
+  <x:String x:Key="Text.DiffAnalysis.Ask" xml:space="preserve">Ask</x:String>
+  <x:String x:Key="Text.DiffAnalysis.CopySelection" xml:space="preserve">Copy selection</x:String>
+  <x:String x:Key="Text.DiffAnalysis.CopyMarkdown" xml:space="preserve">Copy answer Markdown</x:String>
+  <x:String x:Key="Text.DiffAnalysis.CopyTranscript" xml:space="preserve">Copy full transcript</x:String>
+  <x:String x:Key="Text.DiffAnalysis.Error" xml:space="preserve">Analysis failed: {0}</x:String>
+  <x:String x:Key="Text.DiffAnalysis.FileCount" xml:space="preserve">{0} selected file(s)</x:String>
+  <x:String x:Key="Text.DiffAnalysis.NoChanges" xml:space="preserve">No changes were found in this selection.</x:String>
+  <x:String x:Key="Text.DiffAnalysis.NoProfiles" xml:space="preserve">Set up a CLI profile for analysis to get started.</x:String>
+  <x:String x:Key="Text.DiffAnalysis.NonText" xml:space="preserve">Some changes only provide file metadata. Their contents are outside the text analysis scope.</x:String>
+  <x:String x:Key="Text.DiffAnalysis.Question" xml:space="preserve">Question: {0}</x:String>
+  <x:String x:Key="Text.DiffAnalysis.QuestionPlaceholder" xml:space="preserve">Ask about this change…</x:String>
+  <x:String x:Key="Text.DiffAnalysis.Reading" xml:space="preserve">Reading changes…</x:String>
+  <x:String x:Key="Text.DiffAnalysis.Ready" xml:space="preserve">Choose a CLI and click Start analysis.</x:String>
+  <x:String x:Key="Text.DiffAnalysis.Restarted" xml:space="preserve">Started a new conversation for this change.</x:String>
+  <x:String x:Key="Text.DiffAnalysis.Retry" xml:space="preserve">Retry</x:String>
+  <x:String x:Key="Text.DiffAnalysis.Start" xml:space="preserve">Start analysis</x:String>
+  <x:String x:Key="Text.DiffAnalysis.Stop" xml:space="preserve">Stop</x:String>
+  <x:String x:Key="Text.DiffAnalysis.Stopped" xml:space="preserve">Analysis stopped.</x:String>
+  <x:String x:Key="Text.DiffAnalysis.Thinking" xml:space="preserve">Thinking</x:String>
+  <x:String x:Key="Text.DiffAnalysis.ToolCall" xml:space="preserve">Tool call</x:String>
+  <x:String x:Key="Text.DiffAnalysis.ToolResult" xml:space="preserve">Tool result</x:String>
+  <x:String x:Key="Text.DiffAnalysis.TraceError" xml:space="preserve">CLI error</x:String>
+  <x:String x:Key="Text.DiffAnalysis.TraceStarted" xml:space="preserve">Analysis started.</x:String>
+  <x:String x:Key="Text.DiffAnalysis.Truncated" xml:space="preserve">This diff excerpt was truncated.</x:String>
   <x:String x:Key="Text.Diff.Binary" xml:space="preserve">BINARY DIFF</x:String>
   <x:String x:Key="Text.Diff.Binary.ViewContentOfNew" xml:space="preserve">VIEW NEW CONTENT</x:String>
   <x:String x:Key="Text.Diff.EmptyFile" xml:space="preserve">EMPTY FILE</x:String>
@@ -432,6 +500,41 @@
   <x:String x:Key="Text.EditRepositoryNode.TitleForRepository" xml:space="preserve">Edit Selected Repository</x:String>
   <x:String x:Key="Text.ExecuteCustomAction.Target" xml:space="preserve">Target:</x:String>
   <x:String x:Key="Text.ExecuteCustomAction.Repository" xml:space="preserve">This repository</x:String>
+  <x:String x:Key="Text.ExternalCLI.Add" xml:space="preserve">Add profile</x:String>
+  <x:String x:Key="Text.ExternalCLI.Arguments" xml:space="preserve">Arguments (one per line)</x:String>
+  <x:String x:Key="Text.ExternalCLI.ChatOptions" xml:space="preserve">AI Chat model and effort</x:String>
+  <x:String x:Key="Text.ExternalCLI.ChatOptionsHelp" xml:space="preserve">Enter supported values and arguments one per line. Use {model} and {effort} in their corresponding arguments.</x:String>
+  <x:String x:Key="Text.ExternalCLI.ChatModels" xml:space="preserve">Model choices</x:String>
+  <x:String x:Key="Text.ExternalCLI.ChatModelArguments" xml:space="preserve">Model arguments</x:String>
+  <x:String x:Key="Text.ExternalCLI.ChatEfforts" xml:space="preserve">Effort choices</x:String>
+  <x:String x:Key="Text.ExternalCLI.ChatEffortArguments" xml:space="preserve">Effort arguments</x:String>
+  <x:String x:Key="Text.ExternalCLI.Commit" xml:space="preserve">Commit message generation</x:String>
+  <x:String x:Key="Text.ExternalCLI.Configure" xml:space="preserve">External CLI profiles</x:String>
+  <x:String x:Key="Text.ExternalCLI.DiffError" xml:space="preserve">Could not read the diff. {0}</x:String>
+  <x:String x:Key="Text.ExternalCLI.EmptyOutput" xml:space="preserve">The command returned no answer.</x:String>
+  <x:String x:Key="Text.ExternalCLI.Executable" xml:space="preserve">Executable</x:String>
+  <x:String x:Key="Text.ExternalCLI.ExecutableNotFound" xml:space="preserve">Could not find an executable for “{0}”. Use a path or a name from PATH. For scripts, configure their interpreter.</x:String>
+  <x:String x:Key="Text.ExternalCLI.ExitError" xml:space="preserve">The command exited with code {0}.</x:String>
+  <x:String x:Key="Text.ExternalCLI.FirstProfile" xml:space="preserve">First available profile</x:String>
+  <x:String x:Key="Text.ExternalCLI.Generate" xml:space="preserve">Generate</x:String>
+  <x:String x:Key="Text.ExternalCLI.Generating" xml:space="preserve">Generating with {0}…</x:String>
+  <x:String x:Key="Text.ExternalCLI.Help" xml:space="preserve">SourceGit runs the configured command in this worktree with your user permissions. Configure a headless, read-only command for AI tasks. The command may send the supplied diff to its provider.</x:String>
+  <x:String x:Key="Text.ExternalCLI.InvalidArguments" xml:space="preserve">Check the placeholders. Prompt-file mode requires {promptFile} in Arguments. Session arguments require {sessionId} and JSONL output.</x:String>
+  <x:String x:Key="Text.ExternalCLI.InvalidOutput" xml:space="preserve">The command returned invalid SourceGit JSONL output.</x:String>
+  <x:String x:Key="Text.ExternalCLI.LegacyArguments" xml:space="preserve">Previous arguments. Copy the options you still need as individual arguments, then enable this profile’s tasks.</x:String>
+  <x:String x:Key="Text.ExternalCLI.NewProfile" xml:space="preserve">New CLI profile</x:String>
+  <x:String x:Key="Text.ExternalCLI.NoChanges" xml:space="preserve">There are no staged changes in this scope.</x:String>
+  <x:String x:Key="Text.ExternalCLI.OutputLimit" xml:space="preserve">The command exceeded the output limit.</x:String>
+  <x:String x:Key="Text.ExternalCLI.Preferred" xml:space="preserve">Preferred CLI profile</x:String>
+  <x:String x:Key="Text.ExternalCLI.PromptFile" xml:space="preserve">Read the prompt from {promptFile} instead of stdin</x:String>
+  <x:String x:Key="Text.ExternalCLI.ReadingDiff" xml:space="preserve">Reading staged changes…</x:String>
+  <x:String x:Key="Text.ExternalCLI.Ready" xml:space="preserve">Generate a commit subject from the staged changes.</x:String>
+  <x:String x:Key="Text.ExternalCLI.Remove" xml:space="preserve">Remove profile</x:String>
+  <x:String x:Key="Text.ExternalCLI.ResumeArguments" xml:space="preserve">Resume arguments (optional, one per line, include {sessionId})</x:String>
+  <x:String x:Key="Text.ExternalCLI.ResumeGeneration" xml:space="preserve">Resume generation conversations</x:String>
+  <x:String x:Key="Text.ExternalCLI.StartError" xml:space="preserve">Could not start the command. {0}</x:String>
+  <x:String x:Key="Text.ExternalCLI.StructuredOutput" xml:space="preserve">Read SourceGit JSONL output</x:String>
+  <x:String x:Key="Text.ExternalCLI.TimeoutError" xml:space="preserve">The command timed out after {0} seconds.</x:String>
   <x:String x:Key="Text.Fetch" xml:space="preserve">Fetch</x:String>
   <x:String x:Key="Text.Fetch.AllRemotes" xml:space="preserve">Fetch all remotes</x:String>
   <x:String x:Key="Text.Fetch.Force" xml:space="preserve">Force override local refs</x:String>
@@ -680,6 +783,8 @@
   <x:String x:Key="Text.Preferences.AI" xml:space="preserve">AI</x:String>
   <x:String x:Key="Text.Preferences.AI.AdditionalPrompt" xml:space="preserve">Additional Prompt (Use `-` to list your requirements)</x:String>
   <x:String x:Key="Text.Preferences.AI.ApiKey" xml:space="preserve">API Key</x:String>
+  <x:String x:Key="Text.Preferences.AI.CommitMessageRule" xml:space="preserve">Commit Message Rules</x:String>
+  <x:String x:Key="Text.Preferences.AI.CommitMessageRule.Reset" xml:space="preserve">Restore Defaults</x:String>
   <x:String x:Key="Text.Preferences.AI.ExtraHeaders" xml:space="preserve">Extra Headers (one `Name: Value` per line)</x:String>
   <x:String x:Key="Text.Preferences.AI.Model" xml:space="preserve">Model</x:String>
   <x:String x:Key="Text.Preferences.AI.Model.AutoFetchAvailableModels" xml:space="preserve">Fetch available model-ids automatically</x:String>
@@ -754,6 +859,60 @@
   <x:String x:Key="Text.PruneRemote.Target" xml:space="preserve">Target:</x:String>
   <x:String x:Key="Text.PruneWorktrees" xml:space="preserve">Prune Worktrees</x:String>
   <x:String x:Key="Text.PruneWorktrees.Tip" xml:space="preserve">Prune worktree information in `$GIT_COMMON_DIR/worktrees`</x:String>
+  <x:String x:Key="Text.PublishReview" xml:space="preserve">Publish Pull/Merge Request</x:String>
+  <x:String x:Key="Text.PublishReview.Accounts" xml:space="preserve">PR/MR credentials</x:String>
+  <x:String x:Key="Text.PublishReview.AuthFailed" xml:space="preserve">The server rejected access. Check the token and repository permissions.</x:String>
+  <x:String x:Key="Text.PublishReview.Checking" xml:space="preserve">Checking the source and target refs…</x:String>
+  <x:String x:Key="Text.PublishReview.Confirm" xml:space="preserve">Push if needed and publish</x:String>
+  <x:String x:Key="Text.PublishReview.CreateMenu" xml:space="preserve">Create PR/MR…</x:String>
+  <x:String x:Key="Text.PublishReview.DefaultTarget" xml:space="preserve">Default target branch</x:String>
+  <x:String x:Key="Text.PublishReview.Description" xml:space="preserve">Description (Markdown)</x:String>
+  <x:String x:Key="Text.PublishReview.Disabled" xml:space="preserve">Disabled</x:String>
+  <x:String x:Key="Text.PublishReview.LoadFailed" xml:space="preserve">Could not load PR/MR details: {0}</x:String>
+  <x:String x:Key="Text.PublishReview.PublishFailed" xml:space="preserve">Could not publish PR/MR: {0}</x:String>
+  <x:String x:Key="Text.PublishReview.DraftFailed" xml:space="preserve">Could not generate a draft. Fetch the target remote if its commits are missing locally. {0}</x:String>
+  <x:String x:Key="Text.PublishReview.DuplicateInstance" xml:space="preserve">This server is configured for a different provider already.</x:String>
+  <x:String x:Key="Text.PublishReview.Existing" xml:space="preserve">A matching request already exists.</x:String>
+  <x:String x:Key="Text.PublishReview.Finding" xml:space="preserve">Checking for an existing request with {0}…</x:String>
+  <x:String x:Key="Text.PublishReview.GenerateDraft" xml:space="preserve">Generate PR/MR draft</x:String>
+  <x:String x:Key="Text.PublishReview.InvalidCredential" xml:space="preserve">Enter an HTTPS server and an access token.</x:String>
+  <x:String x:Key="Text.PublishReview.InvalidResult" xml:space="preserve">The publisher returned an invalid response.</x:String>
+  <x:String x:Key="Text.PublishReview.Loading" xml:space="preserve">Loading refs and remotes…</x:String>
+  <x:String x:Key="Text.PublishReview.MultipleUrls" xml:space="preserve">Choose a remote with one URL. {0} resolves to multiple URLs.</x:String>
+  <x:String x:Key="Text.PublishReview.NewPublisher" xml:space="preserve">New publisher</x:String>
+  <x:String x:Key="Text.PublishReview.NoCommits" xml:space="preserve">There are no source commits to describe.</x:String>
+  <x:String x:Key="Text.PublishReview.NoTargets" xml:space="preserve">There are no target branches on this remote.</x:String>
+  <x:String x:Key="Text.PublishReview.Open" xml:space="preserve">Open published request</x:String>
+  <x:String x:Key="Text.PublishReview.Published" xml:space="preserve">The request was published.</x:String>
+  <x:String x:Key="Text.PublishReview.PublisherHelp" xml:space="preserve">Configure a trusted command that reads a publication request on stdin. The command uses its own sign-in and prints a JSON result.</x:String>
+  <x:String x:Key="Text.PublishReview.PublisherLabel" xml:space="preserve">Publisher</x:String>
+  <x:String x:Key="Text.PublishReview.Publishers" xml:space="preserve">PR/MR Publishers</x:String>
+  <x:String x:Key="Text.PublishReview.Publishing" xml:space="preserve">Publishing with {0}…</x:String>
+  <x:String x:Key="Text.PublishReview.PushFailed" xml:space="preserve">Push to {0} failed. Resolve the Git error and try again.</x:String>
+  <x:String x:Key="Text.PublishReview.PushRemote" xml:space="preserve">Source remote</x:String>
+  <x:String x:Key="Text.PublishReview.Pushing" xml:space="preserve">Pushing {0} to {1}…</x:String>
+  <x:String x:Key="Text.PublishReview.Ready" xml:space="preserve">Review the branches, title and description before publishing.</x:String>
+  <x:String x:Key="Text.PublishReview.Refresh" xml:space="preserve">Refresh refs</x:String>
+  <x:String x:Key="Text.PublishReview.RemoteReadFailed" xml:space="preserve">Could not read branch refs from {0}. Check the remote and authentication.</x:String>
+  <x:String x:Key="Text.PublishReview.RepositoryHelp" xml:space="preserve">Select remote and branch defaults. SourceGit uses the token configured for the selected target instance.</x:String>
+  <x:String x:Key="Text.PublishReview.RequestFailed" xml:space="preserve">The server returned HTTP {0}.</x:String>
+  <x:String x:Key="Text.PublishReview.ReviewCredentials" xml:space="preserve">Set access token</x:String>
+  <x:String x:Key="Text.PublishReview.SameBranch" xml:space="preserve">Select a different target. Both refs point to the same project branch.</x:String>
+  <x:String x:Key="Text.PublishReview.SameInstance" xml:space="preserve">Choose source and target remotes on the same hosting instance.</x:String>
+  <x:String x:Key="Text.PublishReview.SelectTarget" xml:space="preserve">Select target branch</x:String>
+  <x:String x:Key="Text.PublishReview.Server" xml:space="preserve">Server (HTTPS)</x:String>
+  <x:String x:Key="Text.PublishReview.Source" xml:space="preserve">Source remote and branch</x:String>
+  <x:String x:Key="Text.PublishReview.Stale" xml:space="preserve">A remote address or branch tip changed. Refresh the preview and review the request again.</x:String>
+  <x:String x:Key="Text.PublishReview.StoreFailed" xml:space="preserve">Could not save the token to the system keychain.</x:String>
+  <x:String x:Key="Text.PublishReview.StoreHelp" xml:space="preserve">SourceGit stores tokens in the system keychain and matches them to the target remote.</x:String>
+  <x:String x:Key="Text.PublishReview.Target" xml:space="preserve">Target remote and branch</x:String>
+  <x:String x:Key="Text.PublishReview.TargetRemote" xml:space="preserve">Target remote</x:String>
+  <x:String x:Key="Text.PublishReview.Template" xml:space="preserve">Description template</x:String>
+  <x:String x:Key="Text.PublishReview.Title" xml:space="preserve">Title</x:String>
+  <x:String x:Key="Text.PublishReview.Token" xml:space="preserve">Access token</x:String>
+  <x:String x:Key="Text.PublishReview.TokenRequired" xml:space="preserve">Set an access token for the selected remote to create the request.</x:String>
+  <x:String x:Key="Text.PublishReview.TooManyResults" xml:space="preserve">Too many matching requests to verify safely.</x:String>
+  <x:String x:Key="Text.PublishReview.Unconfirmed" xml:space="preserve">The publisher could not confirm creation. Retry to look for an existing request first. {0}</x:String>
   <x:String x:Key="Text.Pull" xml:space="preserve">Pull</x:String>
   <x:String x:Key="Text.Pull.Branch" xml:space="preserve">Remote Branch:</x:String>
   <x:String x:Key="Text.Pull.Into" xml:space="preserve">Into:</x:String>

@@ -1076,6 +1076,7 @@ namespace SourceGit.Views
                     menu.Items.Add(createPR);
                 }
             }
+            PublishPullRequest.AddMenu(this, menu.Items, repo, branch);
             menu.Items.Add(new MenuItem() { Header = "-" });
             TryToAddCustomActionsToBranchContextMenu(repo, menu, branch);
 

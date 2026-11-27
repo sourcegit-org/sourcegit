@@ -186,15 +186,16 @@ namespace SourceGit.ViewModels
                 _repo.SendNotification(App.Text("SaveAsPatchSuccess"));
         }
 
+        public string RepositoryPath => _repo.FullPath;
+
+        public Models.DiffOption CreateDiffOption(Models.Change change) =>
+            _untracked.Contains(change)
+                ? new(_selectedStash.UntrackedParent, _selectedStash.Parents[2], change)
+                : new(_selectedStash.Parents[0], _selectedStash.SHA, change);
+
         public void OpenChangeWithExternalDiffTool(Models.Change change)
         {
-            Models.DiffOption opt;
-            if (_untracked.Contains(change))
-                opt = new Models.DiffOption(_selectedStash.UntrackedParent, _selectedStash.Parents[2], change);
-            else
-                opt = new Models.DiffOption(_selectedStash.Parents[0], _selectedStash.SHA, change);
-
-            new Commands.DiffTool(_repo.FullPath, opt).Open();
+            new Commands.DiffTool(_repo.FullPath, CreateDiffOption(change)).Open();
         }
 
         public async Task CheckoutFilesAsync(List<Models.Change> changes)

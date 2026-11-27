@@ -336,7 +336,10 @@ namespace SourceGit.Views
             base.OnClosing(e);
 
             if (!Design.IsDesignMode && DataContext is ViewModels.Launcher launcher)
+            {
+                ViewModels.AIChat.FlushOpenChats();
                 launcher.CloseAll();
+            }
         }
 
         protected override void OnClosed(EventArgs e)

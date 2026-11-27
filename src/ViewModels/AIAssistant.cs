@@ -8,7 +8,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace SourceGit.ViewModels
 {
-    public class AIAssistant : ObservableObject
+    public class AIAssistant : ObservableObject, IAssistant
     {
         public List<string> AvailableModels
         {

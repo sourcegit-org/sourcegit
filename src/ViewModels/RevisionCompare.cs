@@ -73,7 +73,7 @@ namespace SourceGit.ViewModels
                 if (SetProperty(ref _changeSelection, value))
                 {
                     if (value is { Count: 1, HasFolder: false })
-                        DiffContext = new DiffContext(_repo.FullPath, new Models.DiffOption(GetSHA(_startPoint), GetSHA(_endPoint), value.Changes[0]), _diffContext);
+                        DiffContext = new DiffContext(_repo.FullPath, CreateDiffOption(value.Changes[0]), _diffContext);
                     else
                         DiffContext = null;
                 }
@@ -128,7 +128,7 @@ namespace SourceGit.ViewModels
 
         public void OpenChangeWithExternalDiffTool(Models.Change change)
         {
-            var opt = new Models.DiffOption(GetSHA(_startPoint), GetSHA(_endPoint), change);
+            var opt = CreateDiffOption(change);
             new Commands.DiffTool(_repo.FullPath, opt).Open();
         }
 
@@ -145,6 +145,10 @@ namespace SourceGit.ViewModels
             IsLoading = true;
             Refresh();
         }
+
+        public string RepositoryPath => _repo.FullPath;
+
+        public Models.DiffOption CreateDiffOption(Models.Change change) => new(GetSHA(_startPoint), GetSHA(_endPoint), change);
 
         public string GetAbsPath(string path)
         {

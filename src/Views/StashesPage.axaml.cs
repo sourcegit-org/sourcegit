@@ -260,6 +260,7 @@ namespace SourceGit.Views
                 menu.Items.Add(new MenuItem { Header = "-" });
                 menu.Items.Add(copyPath);
                 menu.Items.Add(copyFullPath);
+                DiffAnalysis.AddSelectionMenu(menu, this, vm.RepositoryPath, selection.Changes, vm.CreateDiffOption);
                 menu.Open(sender as Control);
             }
 

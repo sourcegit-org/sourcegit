@@ -76,6 +76,7 @@ namespace SourceGit.Views
                         layout.RepositorySearchCommitWidth = value.Value;
                     else if (_isNormalSidebarVisible)
                         layout.RepositorySidebarWidth = value.Value;
+                    UpdateAIChatLayout();
                 }
             }
         }
@@ -86,10 +87,114 @@ namespace SourceGit.Views
             InitializeComponent();
         }
 
+        public static readonly DirectProperty<Repository, GridLength> AIChatColumnWidthProperty =
+            AvaloniaProperty.RegisterDirect<Repository, GridLength>(nameof(AIChatColumnWidth), static view => view.AIChatColumnWidth,
+                static (view, value) => view.AIChatColumnWidth = value);
+
+        public static readonly DirectProperty<Repository, double> AIChatMinWidthProperty =
+            AvaloniaProperty.RegisterDirect<Repository, double>(nameof(AIChatMinWidth), static view => view.AIChatMinWidth);
+
+        public static readonly DirectProperty<Repository, double> AIChatMaxWidthProperty =
+            AvaloniaProperty.RegisterDirect<Repository, double>(nameof(AIChatMaxWidth), static view => view.AIChatMaxWidth);
+
+        public GridLength AIChatColumnWidth
+        {
+            get => _aiChatWidth;
+            set
+            {
+                if (AIChatDock is { IsVisible: true } && value.IsAbsolute && value.Value >= MinChatWidth &&
+                    SetAndRaise(AIChatColumnWidthProperty, ref _aiChatWidth, value))
+                    ViewModels.Preferences.Instance.Layout.AIChatWidth = value.Value;
+            }
+        }
+
+        public double AIChatMinWidth => _aiChatMinWidth;
+        public double AIChatMaxWidth => _aiChatMaxWidth;
+
+        internal void ShowAIChat(ViewModels.AIChat chat)
+        {
+            chat.RefreshProfiles();
+            if (DiffAnalysis.ActivateOpenWindow(chat))
+                return;
+
+            if (AvailableChatWidth < MinChatWidth)
+            {
+                HideAIChat();
+                if (TopLevel.GetTopLevel(this) is Window owner)
+                    DiffAnalysis.ShowChatWindow(owner, chat);
+                return;
+            }
+
+            if (AIChatDock.Content is not AIChatPanel panel || panel.DataContext != chat)
+            {
+                panel = new AIChatPanel() { DataContext = chat };
+                panel.HideRequested += HideAIChat;
+                AIChatDock.Content = panel;
+            }
+
+            _aiChatRequested = true;
+            UpdateAIChatLayout();
+            panel.FocusDraft();
+        }
+
+        private void HideAIChat()
+        {
+            if (AIChatDock.Content is AIChatPanel { DataContext: ViewModels.AIChat chat })
+                chat.FlushDraft();
+            _aiChatRequested = false;
+            UpdateAIChatLayout();
+        }
+
+        private void OnToggleAIChat(object sender, RoutedEventArgs e) => ToggleAIChat();
+
+        internal void ToggleAIChat()
+        {
+            if (AIChatDock.IsVisible)
+                HideAIChat();
+            else if (DataContext is ViewModels.Repository repo)
+                ShowAIChat(repo.Chat);
+        }
+
+        private void OnRepositoryBodySizeChanged(object sender, SizeChangedEventArgs e) => UpdateAIChatLayout();
+
+        private double AvailableChatWidth => Math.Min(620, (RepositoryBody?.Bounds.Width ?? 0) - SidebarWidth.Value - 420);
+
+        private void UpdateAIChatLayout()
+        {
+            if (AIChatDock == null || AIChatSplitter == null)
+                return;
+
+            var max = AvailableChatWidth;
+            var visible = _aiChatRequested && max >= MinChatWidth;
+            AIChatDock.IsVisible = visible;
+            AIChatSplitter.IsVisible = visible;
+            SetAndRaise(AIChatMinWidthProperty, ref _aiChatMinWidth, visible ? MinChatWidth : 0);
+            SetAndRaise(AIChatMaxWidthProperty, ref _aiChatMaxWidth, visible ? max : 0);
+            var preferred = ViewModels.Preferences.Instance.Layout.AIChatWidth;
+            var width = visible ? Math.Clamp(double.IsFinite(preferred) ? preferred : 380, MinChatWidth, max) : 0;
+            SetAndRaise(AIChatColumnWidthProperty, ref _aiChatWidth, new GridLength(width));
+        }
+
+        private const double MinChatWidth = 320;
+        private GridLength _aiChatWidth = new(0);
+        private double _aiChatMinWidth;
+        private double _aiChatMaxWidth;
+        private bool _aiChatRequested;
+
         protected override void OnLoaded(RoutedEventArgs e)
         {
             base.OnLoaded(e);
             UpdateLeftSidebarLayout();
+        }
+
+        protected override void OnDataContextChanged(EventArgs e)
+        {
+            base.OnDataContextChanged(e);
+            if (AIChatDock?.Content is AIChatPanel)
+            {
+                HideAIChat();
+                AIChatDock.Content = null;
+            }
         }
 
         private async void OnOpenConfigure(object sender, RoutedEventArgs e)
