@@ -177,7 +177,7 @@ namespace SourceGit.Views
                 if (_user == null)
                     return;
 
-                _img = Models.AvatarManager.Instance.Request(_user.Email, false);
+                _img = Models.AvatarManager.Instance.Request(_user.Email, _user.Name, false);
                 InvalidateVisual();
             }
             else if (change.Property == UseGitHubStyleAvatarProperty)
@@ -202,7 +202,7 @@ namespace SourceGit.Views
             refetch.Click += (_, ev) =>
             {
                 if (_user != null)
-                    Models.AvatarManager.Instance.Request(_user.Email, true);
+                    Models.AvatarManager.Instance.Request(_user.Email, _user.Name, true);
 
                 ev.Handled = true;
             };
