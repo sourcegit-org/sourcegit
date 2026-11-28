@@ -21,6 +21,7 @@
   <x:String x:Key="Text.AIAssistant.Regen" xml:space="preserve">ΕΠΑΝΑΔΗΜΙΟΥΡΓΙΑ</x:String>
   <x:String x:Key="Text.AIAssistant.Tip" xml:space="preserve">Χρήση AI για δημιουργία μηνύματος commit</x:String>
   <x:String x:Key="Text.AIAssistant.Use" xml:space="preserve">Χρήση</x:String>
+  <x:String x:Key="Text.AIAssistant.CommitAfterUse" xml:space="preserve">Εφαρμογή και καταχώρηση</x:String>
   <x:String x:Key="Text.App.Hide" xml:space="preserve">Απόκρυψη SourceGit</x:String>
   <x:String x:Key="Text.App.HideOthers" xml:space="preserve">Απόκρυψη άλλων</x:String>
   <x:String x:Key="Text.App.ShowAll" xml:space="preserve">Εμφάνιση όλων</x:String>

@@ -21,6 +21,7 @@
   <x:String x:Key="Text.AIAssistant.Regen" xml:space="preserve">再生成</x:String>
   <x:String x:Key="Text.AIAssistant.Tip" xml:space="preserve">AI を使用してコミットメッセージを生成</x:String>
   <x:String x:Key="Text.AIAssistant.Use" xml:space="preserve">使用</x:String>
+  <x:String x:Key="Text.AIAssistant.CommitAfterUse" xml:space="preserve">適用してコミット</x:String>
   <x:String x:Key="Text.App.Hide" xml:space="preserve">SourceGit を隠す</x:String>
   <x:String x:Key="Text.App.HideOthers" xml:space="preserve">他を隠す</x:String>
   <x:String x:Key="Text.App.ShowAll" xml:space="preserve">すべて表示</x:String>

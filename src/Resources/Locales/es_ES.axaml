@@ -21,6 +21,7 @@
   <x:String x:Key="Text.AIAssistant.Regen" xml:space="preserve">RE-GENERAR</x:String>
   <x:String x:Key="Text.AIAssistant.Tip" xml:space="preserve">Usar OpenAI para generar mensaje de commit</x:String>
   <x:String x:Key="Text.AIAssistant.Use" xml:space="preserve">Usar</x:String>
+  <x:String x:Key="Text.AIAssistant.CommitAfterUse" xml:space="preserve">Aplicar y hacer commit</x:String>
   <x:String x:Key="Text.App.Hide" xml:space="preserve">Ocultar SourceGit</x:String>
   <x:String x:Key="Text.App.HideOthers" xml:space="preserve">Ocultar Otros</x:String>
   <x:String x:Key="Text.App.ShowAll" xml:space="preserve">Mostrar Todo</x:String>

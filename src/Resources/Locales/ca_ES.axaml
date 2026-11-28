@@ -21,6 +21,7 @@
   <x:String x:Key="Text.AIAssistant.Regen" xml:space="preserve">REGENERA</x:String>
   <x:String x:Key="Text.AIAssistant.Tip" xml:space="preserve">Utilitza la IA per generar un missatge de comissió</x:String>
   <x:String x:Key="Text.AIAssistant.Use" xml:space="preserve">Utilitza</x:String>
+  <x:String x:Key="Text.AIAssistant.CommitAfterUse" xml:space="preserve">Aplica i fes el «commit»</x:String>
   <x:String x:Key="Text.App.Hide" xml:space="preserve">Amaga SourceGit</x:String>
   <x:String x:Key="Text.App.HideOthers" xml:space="preserve">Amaga els altres</x:String>
   <x:String x:Key="Text.App.ShowAll" xml:space="preserve">Mostra-ho tot</x:String>

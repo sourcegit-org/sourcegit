@@ -21,6 +21,7 @@
   <x:String x:Key="Text.AIAssistant.Regen" xml:space="preserve">BUAT ULANG</x:String>
   <x:String x:Key="Text.AIAssistant.Tip" xml:space="preserve">Gunakan AI untuk membuat pesan commit</x:String>
   <x:String x:Key="Text.AIAssistant.Use" xml:space="preserve">Gunakan</x:String>
+  <x:String x:Key="Text.AIAssistant.CommitAfterUse" xml:space="preserve">Terapkan dan buat komit</x:String>
   <x:String x:Key="Text.App.Hide" xml:space="preserve">Sembunyikan SourceGit</x:String>
   <x:String x:Key="Text.App.HideOthers" xml:space="preserve">Sembunyikan Lainnya</x:String>
   <x:String x:Key="Text.App.ShowAll" xml:space="preserve">Tampilkan Semua</x:String>

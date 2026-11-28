@@ -20,6 +20,7 @@
   <x:String x:Key="Text.AIAssistant.Model" xml:space="preserve">Modello</x:String>
   <x:String x:Key="Text.AIAssistant.Regen" xml:space="preserve">RIGENERA</x:String>
   <x:String x:Key="Text.AIAssistant.Tip" xml:space="preserve">Usa AI per generare il messaggio di commit</x:String>
+  <x:String x:Key="Text.AIAssistant.CommitAfterUse" xml:space="preserve">Applica e crea il commit</x:String>
   <x:String x:Key="Text.App.Hide" xml:space="preserve">Nascondi SourceGit</x:String>
   <x:String x:Key="Text.App.ShowAll" xml:space="preserve">Mostra Tutto</x:String>
   <x:String x:Key="Text.Apply.File.Placeholder" xml:space="preserve">Seleziona file patch da applicare</x:String>

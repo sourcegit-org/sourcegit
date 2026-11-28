@@ -21,6 +21,7 @@
   <x:String x:Key="Text.AIAssistant.Regen" xml:space="preserve">ПЕРЕСОЗДАТЬ</x:String>
   <x:String x:Key="Text.AIAssistant.Tip" xml:space="preserve">Использовать OpenAI для создания сообщения о ревизии</x:String>
   <x:String x:Key="Text.AIAssistant.Use" xml:space="preserve">Использовать</x:String>
+  <x:String x:Key="Text.AIAssistant.CommitAfterUse" xml:space="preserve">Применить и создать коммит</x:String>
   <x:String x:Key="Text.App.Hide" xml:space="preserve">Скрыть SourceGit</x:String>
   <x:String x:Key="Text.App.HideOthers" xml:space="preserve">Скрыть остальные</x:String>
   <x:String x:Key="Text.App.ShowAll" xml:space="preserve">Показать все</x:String>

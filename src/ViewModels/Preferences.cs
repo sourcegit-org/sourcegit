@@ -141,6 +141,16 @@ namespace SourceGit.ViewModels
             set => SetProperty(ref _subjectGuideLength, value);
         }
 
+        public bool AIAssistantCommitAfterUse
+        {
+            get => _aiAssistantCommitAfterUse;
+            set
+            {
+                if (SetProperty(ref _aiAssistantCommitAfterUse, value) && !_isLoading)
+                    Save();
+            }
+        }
+
         public int DateTimeFormat
         {
             get => Models.DateTimeFormat.ActiveIndex;
@@ -808,6 +818,7 @@ namespace SourceGit.ViewModels
 
         private int _maxHistoryCommits = 20000;
         private int _subjectGuideLength = 50;
+        private bool _aiAssistantCommitAfterUse = false;
         private bool _useFixedTabWidth = true;
         private bool _useAutoHideScrollBars = true;
         private bool _useGitHubStyleAvatar = true;
