@@ -155,10 +155,14 @@ namespace SourceGit.Views
             (DataContext as ViewModels.AIAssistant)?.Cancel();
         }
 
-        private void OnUseClicked(object sender, RoutedEventArgs e)
+        private async void OnUseClicked(object sender, RoutedEventArgs e)
         {
             if (DataContext is ViewModels.AIAssistant vm && !string.IsNullOrEmpty(vm.Response))
+            {
                 vm.Use(vm.Response);
+                if (vm.CommitAfterUse)
+                    await vm.CommitAsync();
+            }
 
             Close();
             e.Handled = true;

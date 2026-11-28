@@ -38,6 +38,12 @@ namespace SourceGit.ViewModels
             private set => SetProperty(ref _isGenerating, value);
         }
 
+        public bool CommitAfterUse
+        {
+            get => Preferences.Instance.AIAssistantCommitAfterUse;
+            set => Preferences.Instance.AIAssistantCommitAfterUse = value;
+        }
+
         public string Text
         {
             get => _text;
@@ -168,6 +174,12 @@ namespace SourceGit.ViewModels
         public void Use(string text)
         {
             _repo.SetCommitMessage(text);
+        }
+
+        public async Task CommitAsync()
+        {
+            if (_repo.WorkingCopy is { } workingCopy)
+                await workingCopy.CommitAsync(false, false);
         }
 
         public void Cancel()
