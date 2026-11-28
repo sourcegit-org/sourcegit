@@ -21,6 +21,7 @@
   <x:String x:Key="Text.AIAssistant.Regen" xml:space="preserve">צור מחדש</x:String>
   <x:String x:Key="Text.AIAssistant.Tip" xml:space="preserve">שימוש ב־AI ליצירת הודעת commit</x:String>
   <x:String x:Key="Text.AIAssistant.Use" xml:space="preserve">שימוש</x:String>
+  <x:String x:Key="Text.AIAssistant.CommitAfterUse" xml:space="preserve">החלה וביצוע קומיט</x:String>
   <x:String x:Key="Text.App.Hide" xml:space="preserve">הסתר SourceGit</x:String>
   <x:String x:Key="Text.App.HideOthers" xml:space="preserve">הסתר אחרים</x:String>
   <x:String x:Key="Text.App.ShowAll" xml:space="preserve">הצג הכול</x:String>
