@@ -41,10 +41,20 @@ namespace SourceGit.Models
         private Cache _cache = new Cache(256);
         private HashSet<string> _requesting = new HashSet<string>();
         private Dictionary<string, string> _requestNames = new Dictionary<string, string>();
+        private Dictionary<string, DateTimeOffset> _retryAfter = new Dictionary<string, DateTimeOffset>();
         private HashSet<string> _defaultAvatars = new HashSet<string>();
+        private bool _started = false;
 
         public void Start()
         {
+            lock (_synclock)
+            {
+                if (_started)
+                    return;
+
+                _started = true;
+            }
+
             _storePath = Path.Combine(Native.OS.BasicDirectories.CacheDir, "avatars");
             if (!Directory.Exists(_storePath))
                 Directory.CreateDirectory(_storePath);
@@ -79,7 +89,7 @@ namespace SourceGit.Models
 
                     if (email == null)
                     {
-                        Thread.Sleep(100);
+                        await Task.Delay(100);
                         continue;
                     }
 
@@ -134,6 +144,11 @@ namespace SourceGit.Models
                     {
                         _requesting.Remove(email);
                         _requestNames.Remove(email);
+
+                        if (img == null)
+                            _retryAfter[email] = DateTimeOffset.UtcNow.AddMinutes(5);
+                        else
+                            _retryAfter.Remove(email);
                     }
 
                     Dispatcher.UIThread.Post(() =>
@@ -170,6 +185,10 @@ namespace SourceGit.Models
                     return null;
 
                 _cache.Remove(email);
+                lock (_synclock)
+                {
+                    _retryAfter.Remove(email);
+                }
 
                 var localFile = Path.Combine(_storePath, GetEmailHash(email));
                 if (File.Exists(localFile))
@@ -196,7 +215,14 @@ namespace SourceGit.Models
                     }
                     catch
                     {
-                        // ignore
+                        try
+                        {
+                            File.Delete(localFile);
+                        }
+                        catch
+                        {
+                            // ignore
+                        }
                     }
                 }
             }
@@ -204,6 +230,16 @@ namespace SourceGit.Models
             lock (_synclock)
             {
                 _requestNames ??= new Dictionary<string, string>();
+                _retryAfter ??= new Dictionary<string, DateTimeOffset>();
+
+                if (_retryAfter.TryGetValue(email, out var retryAt))
+                {
+                    if (retryAt > DateTimeOffset.UtcNow)
+                        return null;
+
+                    _retryAfter.Remove(email);
+                }
+
                 _requesting.Add(email);
                 _requestNames[email] = name;
             }
@@ -277,6 +313,7 @@ namespace SourceGit.Models
                 lock (_synclock)
                 {
                     _requesting.Remove(email);
+                    _retryAfter.Remove(email);
                 }
 
                 var store = Path.Combine(_storePath, GetEmailHash(email));
