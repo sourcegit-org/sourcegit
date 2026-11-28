@@ -45,7 +45,7 @@
                       Content="{Binding Text}"/>
 
     <!-- Options -->
-    <Grid Grid.Row="2" Margin="8,0,8,8" ColumnDefinitions="Auto,*,18,Auto,Auto,Auto">
+    <Grid Grid.Row="2" Margin="8,0,8,8" ColumnDefinitions="Auto,*,Auto,Auto,Auto">
       <TextBlock Grid.Column="0"
                  Classes="group_header_label"
                  Text="{DynamicResource Text.AIAssistant.Model}"/>
@@ -59,25 +59,39 @@
                 ItemsSource="{Binding AvailableModels, Mode=OneWay}"
                 SelectedItem="{Binding SelectedModel, Mode=TwoWay}"/>
 
-      <v:LoadingIcon Grid.Column="2"
-                     Width="14" Height="14"
-                     IsVisible="{Binding IsGenerating}"/>
-
-      <CheckBox Grid.Column="3"
+      <CheckBox Grid.Column="2"
                 Margin="4,0"
                 VerticalAlignment="Center"
                 Content="{DynamicResource Text.AIAssistant.CommitAfterUse}"
                 IsChecked="{Binding CommitAfterUse, Mode=TwoWay}"/>
 
-      <Button Grid.Column="4"
+      <Button Grid.Column="3"
               Classes="flat primary"
               Height="28"
               Margin="8,0" Padding="12,0"
-              Content="{DynamicResource Text.AIAssistant.Use}"
-              IsEnabled="{Binding Response, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
-              Click="OnUseClicked"/>
+              AutomationProperties.Name="{DynamicResource Text.AIAssistant.Use}"
+              Click="OnUseClicked">
+        <Button.IsEnabled>
+          <MultiBinding Converter="{x:Static BoolConverters.And}">
+            <Binding Path="!IsGenerating"/>
+            <Binding Path="Response" Converter="{x:Static StringConverters.IsNotNullOrEmpty}"/>
+          </MultiBinding>
+        </Button.IsEnabled>
+        <Grid>
+          <Grid.Styles>
+            <Style Selector="TextBlock.generating">
+              <Setter Property="Opacity" Value="0"/>
+            </Style>
+          </Grid.Styles>
+          <TextBlock Classes.generating="{Binding IsGenerating}"
+                     Text="{DynamicResource Text.AIAssistant.Use}"/>
+          <v:LoadingIcon Width="14" Height="14"
+                         HorizontalAlignment="Center" VerticalAlignment="Center"
+                         IsVisible="{Binding IsGenerating}"/>
+        </Grid>
+      </Button>
 
-      <Button Grid.Column="5"
+      <Button Grid.Column="4"
               Classes="flat"
               Height="28"
               Padding="12,0"
